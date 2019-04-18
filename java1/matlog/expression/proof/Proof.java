@@ -6,6 +6,7 @@ import matlog.expression.parser.ExpressionShell;
 import matlog.expression.proof.Exception.ProofException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Kochetkov Nikita M3234
@@ -99,9 +100,47 @@ public class Proof {
 
 
     public void createTreeUsage() {
+        createTree(proof.get(proof.size() - 1));
+    }
+
+    private void createTree(ExpressionShell expressionShell) {
+        expressionShell.setInResultProof();
+        if (expressionShell.isItMP()) {
+            createTree(proof.get(expressionShell.getNumberMPFirst()));
+            createTree(proof.get(expressionShell.getNumberMPSecond()));
+        }
     }
 
     public void printProof() {
+        StringBuilder stringBuilder = new StringBuilder();
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        for (Hypothesis hypothesis : hypotheses) {
+            stringJoiner.add(hypothesis.getExpression().toString());
+        }
+        if (hypotheses.size() > 0) {
+            stringBuilder.append(stringJoiner.toString());
+        }
+        stringBuilder.append("|- " + endStatement.printOriginal() + System.lineSeparator());
+        System.out.print(stringBuilder.toString());
+        int newCounter = 1;
+        Map<Integer, Integer> newIndexes = new HashMap<>();
+        for (ExpressionShell expressionShell : proof) {
+            if(expressionShell.isInResultProof()) {
+                System.out.print("[" + newCounter + ". ");
+                newIndexes.put(indexProof.get(expressionShell.getExpression()), count);
+                newCounter++;
+                if (expressionShell.isItHypothesis()) {
+                    System.out.print("Hypothesis " + expressionShell.getNumberHypothesis() + "] " + expressionShell.getExpression().printOriginal());
+                }
+                if (expressionShell.isItAxiom()) {
+                    System.out.print("Ax. sch. " + expressionShell.getNumberAxiom() + "] " + expressionShell.getExpression().printOriginal());
+                }
+                if (expressionShell.isItMP()) {
+                    System.out.print(String.format("M.P. %d, %d",newIndexes.get(expressionShell.getNumberMPSecond()), newIndexes.get(expressionShell.getNumberMPFirst())) + "] " + expressionShell.getExpression().printOriginal());
+                }
+                System.out.println();
+            }
+        }
     }
 
     public void addInsecure(String statement) throws ProofException {
@@ -115,5 +154,11 @@ public class Proof {
         if (checkOnAxiom(expression)) return;
         if (checkOnMP(expression)) return;
         throw new ProofException("It isn't hypothesis, axiom or MP");
+    }
+
+    public void checkLastEqualsStatement() throws ProofException {
+        if (!proof.get(proof.size() - 1).equals(endStatement)) {
+            throw new ProofException("Last statement != begin statement");
+        }
     }
 }

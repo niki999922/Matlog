@@ -27,6 +27,7 @@ public class EvidenceParser {
                 while ((statement = bufferedReader.readLine()) != null) {
                     proof.addInsecure(statement);
                 }
+                proof.checkLastEqualsStatement();
             } catch (ProofException proofException) {
                 System.out.println("Proof is incorrect");
                 return;

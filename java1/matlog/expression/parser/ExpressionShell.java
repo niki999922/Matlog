@@ -12,6 +12,7 @@ public class ExpressionShell {
     private boolean itHypothesis = false;
     private boolean itAxiom = false;
     private boolean itMP = false;
+    private boolean inResultProof = false;
 
     public ExpressionShell(Expression expression) {
         this.expression = expression;
@@ -89,5 +90,13 @@ public class ExpressionShell {
 
     public boolean isItMP() {
         return itMP;
+    }
+
+    public boolean isInResultProof() {
+        return inResultProof;
+    }
+
+    public void setInResultProof() {
+        this.inResultProof = true;
     }
 }
