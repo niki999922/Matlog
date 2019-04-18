@@ -6,7 +6,6 @@ import matlog.expression.parser.ExpressionShell;
 import matlog.expression.proof.Exception.ProofException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Kochetkov Nikita M3234
@@ -29,7 +28,7 @@ public class Proof {
     }
 
     private void parseHypothesisAndProofStatement(String statement) throws ProofException {
-        if (statement.contains("|-")) throw new ProofException("Can't find |- in proof");
+        if (!statement.contains("|-")) throw new ProofException("Can't find |- in proof");
         final int index = statement.indexOf("|-");
         if (index == 0) {
             endStatement = expressionParser.parse(statement.substring(2));
@@ -43,10 +42,10 @@ public class Proof {
 
 
     /**
-     * @param expression
+     * @param expression of checking
      * @return true if found, or false if not found
      */
-    boolean checkOnHypothesis(Expression expression) {
+    private boolean checkOnHypothesis(Expression expression) {
         for (Hypothesis hypothesis : hypotheses) {
             if (hypothesis.getExpression().equals(expression)) {
                 ExpressionShell expressionShell = new ExpressionShell(expression);
@@ -58,21 +57,20 @@ public class Proof {
         return false;
     }
 
-    boolean checkOnAxiom(Expression expression) {
+    private boolean checkOnAxiom(Expression expression) {
         int numberAxiom = Axiom.check(expression);
-        if (numberAxiom == -1) return false;
+        if (numberAxiom == 0) return false;
         ExpressionShell expressionShell = new ExpressionShell(expression);
         expressionShell.setItAxiom();
         expressionShell.setNumberAxiom(numberAxiom);
         return addExpression(expressionShell);
     }
 
-    boolean checkOnMP(Expression expression) {
+    private boolean checkOnMP(Expression expression) {
         if (!rightPartMP.containsKey(expression)) {
-            return  false;
+            return false;
         }
         Set<Expression> expressionsFromRightPartMP = rightPartMP.get(expression);
-        //Set<Expression> expressionsByOurRightPart = byRightPart.get(expression);
         for (Expression expression1 : expressionsFromRightPartMP) {
             if (expression1.getType() == 1 && indexProof.containsKey(expression1.getLeftSon())) {
                 Integer index = indexProof.get(expression1.getLeftSon());
@@ -83,16 +81,13 @@ public class Proof {
             }
         }
         return false;
-        //return addExpression(expressionShell);
     }
 
     private boolean addExpression(ExpressionShell expressionShell) {
         proof.add(expressionShell);
         if (expressionShell.getExpression().getType() == 1) {
             rightPartMP.putIfAbsent(expressionShell.getExpression().getRightSon(), new HashSet<>());
-            //rightPartMP.putIfAbsent(((Impl) expression).getRhs(), new HashSet<>());
             rightPartMP.get(expressionShell.getExpression().getRightSon()).add(expressionShell.getExpression());
-            //rightPartMP.get(((Impl) expression).getRhs()).add(expression);
         }
         indexProof.putIfAbsent(expressionShell.getExpression(), count++);
         return true;
@@ -106,8 +101,8 @@ public class Proof {
     private void createTree(ExpressionShell expressionShell) {
         expressionShell.setInResultProof();
         if (expressionShell.isItMP()) {
-            createTree(proof.get(expressionShell.getNumberMPFirst()));
-            createTree(proof.get(expressionShell.getNumberMPSecond()));
+            createTree(proof.get(expressionShell.getNumberMPFirst() - 1));
+            createTree(proof.get(expressionShell.getNumberMPSecond() - 1));
         }
     }
 
@@ -120,14 +115,14 @@ public class Proof {
         if (hypotheses.size() > 0) {
             stringBuilder.append(stringJoiner.toString());
         }
-        stringBuilder.append("|- " + endStatement.printOriginal() + System.lineSeparator());
+        stringBuilder.append("|- ").append(endStatement.printOriginal()).append(System.lineSeparator());
         System.out.print(stringBuilder.toString());
         int newCounter = 1;
         Map<Integer, Integer> newIndexes = new HashMap<>();
         for (ExpressionShell expressionShell : proof) {
-            if(expressionShell.isInResultProof()) {
+            if (expressionShell.isInResultProof()) {
                 System.out.print("[" + newCounter + ". ");
-                newIndexes.put(indexProof.get(expressionShell.getExpression()), count);
+                newIndexes.put(indexProof.get(expressionShell.getExpression()), newCounter);
                 newCounter++;
                 if (expressionShell.isItHypothesis()) {
                     System.out.print("Hypothesis " + expressionShell.getNumberHypothesis() + "] " + expressionShell.getExpression().printOriginal());
@@ -136,7 +131,7 @@ public class Proof {
                     System.out.print("Ax. sch. " + expressionShell.getNumberAxiom() + "] " + expressionShell.getExpression().printOriginal());
                 }
                 if (expressionShell.isItMP()) {
-                    System.out.print(String.format("M.P. %d, %d",newIndexes.get(expressionShell.getNumberMPSecond()), newIndexes.get(expressionShell.getNumberMPFirst())) + "] " + expressionShell.getExpression().printOriginal());
+                    System.out.print(String.format("M.P. %d, %d", newIndexes.get(expressionShell.getNumberMPSecond()), newIndexes.get(expressionShell.getNumberMPFirst())) + "] " + expressionShell.getExpression().printOriginal());
                 }
                 System.out.println();
             }
@@ -157,7 +152,9 @@ public class Proof {
     }
 
     public void checkLastEqualsStatement() throws ProofException {
-        if (!proof.get(proof.size() - 1).equals(endStatement)) {
+        //System.out.println(endStatement.printOriginal());
+        //System.out.println(proof.get(proof.size() - 1).getExpression().printOriginal());
+        if (!proof.get(proof.size() - 1).getExpression().equals(endStatement)) {
             throw new ProofException("Last statement != begin statement");
         }
     }

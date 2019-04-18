@@ -6,6 +6,7 @@ import matlog.expression.proof.Proof;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -20,7 +21,8 @@ public class EvidenceParser {
     }
 
     void run() {
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get("input.txt"))) {
+        //try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get("input.txt"))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
             String statement;
             Proof proof = new Proof();
             try {

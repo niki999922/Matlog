@@ -13,6 +13,7 @@ public class Hypothesis {
 
     /**
      * Can have some problems with numbers of hypothesis
+     *
      * @param expression
      * @param number
      */
