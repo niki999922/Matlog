@@ -117,7 +117,7 @@ public class Proof {
             stringJoiner.add(hypothesis.getExpression().printOriginal());
         }
         if (hypotheses.size() > 0) {
-            stringBuilder.append(stringJoiner.toString());
+            stringBuilder.append(stringJoiner.toString() + " ");
         }
         stringBuilder.append("|- ").append(endStatement.printOriginal()).append(System.lineSeparator());
         System.out.print(stringBuilder.toString());
