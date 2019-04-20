@@ -1,6 +1,4 @@
-package matlog.expression;
-
-import matlog.expression.parser.Expression;
+import matlog.expression.parser.ExpressionParser;
 import matlog.expression.proof.Exception.ProofException;
 import matlog.expression.proof.Proof;
 
@@ -9,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
 
 /**
  * @author Kochetkov Nikita M3234
@@ -24,18 +21,9 @@ public class EvidenceParser {
         //try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get("input.txt"))) {
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in))) {
             String statement;
-            Proof proof = new Proof();
-            try {
-                while ((statement = bufferedReader.readLine()) != null) {
-                    proof.addInsecure(statement);
-                }
-                proof.checkLastEqualsStatement();
-            } catch (ProofException proofException) {
-                System.out.println("Proof is incorrect");
-                return;
-            }
-            proof.createTreeUsage();
-            proof.printProof();
+            statement = bufferedReader.readLine();
+            ExpressionParser expressionParser = new ExpressionParser();
+            System.out.println(expressionParser.parse(statement).printExpresion());
         } catch (IOException e) {
             System.err.println("Error reading.");
         }

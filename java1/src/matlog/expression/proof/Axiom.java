@@ -185,10 +185,10 @@ final public class Axiom {
     /**
      *
      * @param expression
-     * @return -1 if not found or number of Axiom
+     * @return 0  if not found or number of Axiom
      */
     static public int check(Expression expression) {
-        if (expression == null) return -1;
+        if (expression == null) return 0;
         if (checkFirstAxiom(expression))   return 1;
         if (checkSecondAxiom(expression))  return 2;
         if (checkThirdAxiom(expression))   return 3;

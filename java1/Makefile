@@ -1,19 +1,17 @@
-all: build
+SOURCES = $(shell find src -type f -name "*.java")
+CLASSES = $(patsubst src/%.java,out/%.class,$(SOURCES))
+MAINCLASS = EvidenceParser
+
+all: $(CLASSES)
 
 run:
-    java -Xms256m -Xmx512m -cp src EvidenceParser
-    
+	java -Xms256m -Xmx512m -cp out ${MAINCLASS}
+
 pack:
-    zip hw1.zip -r Makefile src lib
+	zip hw2.zip -r Makefile src
 
-clean:
-    rm -rf out
-    rm -f src/parser/*.java
-    rm -f src/proof/*.java
-    rm -f src/*.java
+out/%.class: src/%.java out
+	javac -encoding UTF8 -cp src $< -d out
 
-build:
-    javac -cp src src/matlog/expression/EvidenceParser.java
-    
 out:
-    mkdir -p out
+	mkdir -p out

@@ -1,5 +1,3 @@
-package matlog.expression;
-
 import matlog.expression.parser.Expression;
 import matlog.expression.parser.ExpressionParser;
 import matlog.expression.parser.Parser;
