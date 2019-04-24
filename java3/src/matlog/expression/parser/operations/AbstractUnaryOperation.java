@@ -9,12 +9,23 @@ import matlog.expression.parser.Expression;
 public abstract class AbstractUnaryOperation implements Expression {
     protected Expression argument;
     protected int code;
+    protected boolean state;
 
     AbstractUnaryOperation(Expression argument) {
         this.argument = argument;
         code = ((Integer) argument.getCode()).hashCode();
     }
 
+
+    @Override
+    public boolean getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(boolean state) {
+        this.state = state;
+    }
     @Override
     public int getHashCode() {
         return ((Integer) argument.getHashCode()).hashCode();

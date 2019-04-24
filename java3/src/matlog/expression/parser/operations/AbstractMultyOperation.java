@@ -9,6 +9,7 @@ import matlog.expression.parser.Expression;
 public abstract class AbstractMultyOperation implements Expression {
     protected Expression leftArgument, rightArgument;
     protected int code;
+    protected boolean state;
 
     AbstractMultyOperation(Expression leftArgument, Expression rightArgument) {
         this.leftArgument = leftArgument;
@@ -17,23 +18,32 @@ public abstract class AbstractMultyOperation implements Expression {
     }
 
     @Override
+    public boolean getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
+    @Override
     public int hashCode() {
         return code;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return code == obj.hashCode();
+    public boolean equals(Object other) {
+        if (other instanceof AbstractMultyOperation && ((AbstractMultyOperation) other).getRealClass() == getRealClass()) {
+            AbstractMultyOperation op = (AbstractMultyOperation) other;
+            return leftArgument.equals(op.leftArgument) && rightArgument.equals(op.rightArgument);
+        }
+        return false;
     }
 
     @Override
     public int getCode() {
         return code;
-    }
-
-    @Override
-    public int getHashCode() {
-        return ((Integer) (leftArgument.getHashCode() + rightArgument.getHashCode())).hashCode();
     }
 
     @Override

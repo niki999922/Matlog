@@ -13,6 +13,17 @@ public final class Or extends AbstractMultyOperation {
         code = (leftArgument.getCode() *23 + rightArgument.getCode()*37)%429496729;
     }
 
+
+    @Override
+    public boolean calculate() {
+        return leftArgument.calculate() | rightArgument.calculate();
+    }
+
+    @Override
+    public int getHashCode() {
+        return this.hashCode();
+    }
+
     @Override
     public String printExpresion() {
         return String.format("(|,%s,%s)", leftArgument.printExpresion(), rightArgument.printExpresion());
@@ -23,9 +34,14 @@ public final class Or extends AbstractMultyOperation {
         return String.format("(%s | %s)", leftArgument.printOriginal(), rightArgument.printOriginal());
     }
 
+   @Override
+   public int hashCode() {
+       return (leftArgument.hashCode() * 31 + rightArgument.hashCode()) * 31 + "|".hashCode();
+   }
+
     @Override
-    public int hashCode() {
-        return code;
+    public Class<?> getRealClass() {
+        return Or.class;
     }
 
 
