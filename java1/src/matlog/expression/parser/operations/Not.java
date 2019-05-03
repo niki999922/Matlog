@@ -14,18 +14,37 @@ public final class Not extends AbstractUnaryOperation{
     }
 
     @Override
+    public boolean calculate() {
+        return !argument.calculate();
+    }
+
+    @Override
     public String printExpresion() {
         return String.format("(!%s)", argument.printExpresion());
     }
 
     @Override
     public String printOriginal() {
-        return String.format("!%s", argument.printOriginal());
+        return "!" + argument.printOriginal();
     }
 
     @Override
     public int hashCode() {
-        return code;
+        return argument.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Not) {
+            Not neg = (Not) obj;
+            return argument.equals(neg.argument);
+        }
+        return false;
+    }
+
+    @Override
+    public Class<?> getRealClass() {
+        return Not.class;
     }
 
 

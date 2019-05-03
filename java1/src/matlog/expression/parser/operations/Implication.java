@@ -14,6 +14,17 @@ public final class Implication extends AbstractMultyOperation {
     }
 
     @Override
+    public boolean calculate() {
+        return !leftArgument.calculate() | rightArgument.calculate();
+    }
+
+
+    @Override
+    public int getHashCode() {
+        return this.hashCode();
+    }
+
+    @Override
     public String printExpresion() {
         return String.format("(->,%s,%s)", leftArgument.printExpresion(), rightArgument.printExpresion());
     }
@@ -23,11 +34,20 @@ public final class Implication extends AbstractMultyOperation {
         return String.format("(%s -> %s)", leftArgument.printOriginal(), rightArgument.printOriginal());
     }
 
-    @Override
-    public int hashCode() {
-        return code;
+    public String printOriginalWithoutBrackets() {
+        return String.format("%s -> %s", leftArgument.printOriginal(), rightArgument.printOriginal());
     }
 
+
+    @Override
+    public int hashCode() {
+        return (leftArgument.hashCode() * 31 + rightArgument.hashCode()) * 31 + "->".hashCode();
+    }
+
+    @Override
+    public Class<?> getRealClass() {
+        return Implication.class;
+    }
 
     @Override
     public int getType() {
