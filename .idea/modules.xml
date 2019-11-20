@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/TT/haskell1/haskell1.iml" filepath="$PROJECT_DIR$/TT/haskell1/haskell1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Matlog/haskell_1/haskell_1.iml" filepath="$PROJECT_DIR$/Matlog/haskell_1/haskell_1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Matlog/java1/java1.iml" filepath="$PROJECT_DIR$/Matlog/java1/java1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Matlog/java2/java2.iml" filepath="$PROJECT_DIR$/Matlog/java2/java2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Matlog/java3/java3.iml" filepath="$PROJECT_DIR$/Matlog/java3/java3.iml" />
+    </modules>
+  </component>
+</project>
