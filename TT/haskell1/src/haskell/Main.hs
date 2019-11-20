@@ -6,6 +6,6 @@ import Parser (parser)
 
 main :: IO ()
 main = do
-  input <- getLine
+  input <- getContents
   case parser(alexScanTokens input) of
     Right expr -> putStrLn $ show expr

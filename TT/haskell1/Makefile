@@ -1,7 +1,7 @@
-SOURCES=src/Main.hs src/Grammar.hs
-GEN_SOURCES=src/Lexer.x src/Parser.y
-GENERATED=src/Lexer.hs src/Parser.hs
-PACKAGE=haskell_1.zip
+SOURCES=src/haskell/Main.hs src/haskell/Grammar.hs
+GEN_SOURCES=src/haskell/Lexer.x src/haskell/Parser.y
+GENERATED=src/haskell/Lexer.hs src/haskell/Parser.hs
+PACKAGE=haskell1.zip
 
 .PHONY: pack all run
 
@@ -11,11 +11,11 @@ run: parser
 	./parser
 
 parser: $(GENERATED) $(SOURCES)
-	ghc -i./src -tmpdir . ./src/Main.hs -o parser
+	ghc -i./src/haskell -tmpdir . ./src/haskell/Main.hs -o parser
 
 $(GENERATED): $(GEN_SOURCES) $(SOURCES)
-	alex src/Lexer.x -o src/Lexer.hs
-	happy src/Parser.y -o src/Parser.hs
+	alex src/haskell/Lexer.x -o src/haskell/Lexer.hs
+	happy src/haskell/Parser.y -o src/haskell/Parser.hs
 
 pack: $(GENERATED)
-	7z $(PACKAGE) -r Makefile src
+	zip $(PACKAGE) -r Makefile src/haskell/

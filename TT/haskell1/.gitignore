@@ -1,0 +1,8 @@
+*.hi
+*.o
+
+tmp_file.txt
+parser
+haskell1.zip
+Lexer.hs
+Parser.hs
