@@ -28,7 +28,7 @@ public class ExpressionParser implements Parser {
     }
 
     private int getBorder(int start) {
-        while (start < expression.length() && (Character.isLetter(expression.charAt(start))| Character.isDigit(expression.charAt(start)) || expression.charAt(start) == '\'' || expression.charAt(start) == '`' || expression.charAt(start) == '’')) {
+        while (start < expression.length() && (Character.isLetter(expression.charAt(start)) | Character.isDigit(expression.charAt(start)) || expression.charAt(start) == '\'' || expression.charAt(start) == '`' || expression.charAt(start) == '’')) {
             ++start;
         }
         return start;
