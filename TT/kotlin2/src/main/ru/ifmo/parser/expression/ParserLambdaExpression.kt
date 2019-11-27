@@ -16,24 +16,23 @@ class ParserLambdaExpression : Parse {
 
     override fun parse(input: String): Node {
         lexer = LexerLambdaExpression(input)
-        return expression()
+        return lambda()
     }
 
-    private fun expression(): Node {
+    private fun lambda(): Node {
         return if (lexer.token() == Token.LAMBDA) {
             lexer.next()
-            var con = lexer.context()
+            var lambdaTitle = lexer.context()
             lexer.next()
             lexer.next()
-            var expr = expression()
-            Lambda(con, expr)
+            var lambdaBody = lambda()
+            Lambda(lambdaTitle, lambdaBody)
         } else {
-            Expression(atom())
+            Expression(expression())
         }
     }
 
-    //(\a.(\b.((((a b) c) (\d.(e (\f.g)))) h)))
-    private fun atom(): Node {
+    private fun expression(): Node {
         var left: Node? = null
         var right: Node? = null
         var ans: Node = Application(null,null)
@@ -42,7 +41,7 @@ class ParserLambdaExpression : Parse {
             when (lexer.token()) {
                 Token.LPAREN -> {
                     lexer.next()
-                    var expr = expression()
+                    var expr = lambda()
                     lexer.next()
                     if (left == null) {
                         left = expr
@@ -64,7 +63,7 @@ class ParserLambdaExpression : Parse {
                     }
                 }
                 Token.LAMBDA -> {
-                    val lambda = expression()
+                    val lambda = lambda()
                     if (left == null) {
                         left = lambda
                     } else {

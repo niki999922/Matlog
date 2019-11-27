@@ -84,10 +84,5 @@ class LexerLambdaExpression(private var input: String) : Lexer {
         return currentToken
     }
 
-    override fun prev(): Token {
-        tokenPosition--
-        return currentToken
-    }
-
     override fun tokenDescription() = "${currentToken.title} in $currentPosition position"
 }
