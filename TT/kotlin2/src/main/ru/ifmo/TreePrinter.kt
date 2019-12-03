@@ -61,16 +61,22 @@ object TreePrinter {
         appendln(createIdLine(tree, id))
 //        append("${getChildrenLine(tree, id)}")
 
-        appendln("$id -> {${getChildrenLine(tree)}};")
+//        appendln("$id -> {${getChildrenLine(tree)}};")
         if (tree is Application) {
-            if (tree.parentNode !is Lambda) {
-                append(dfs(tree.leftChild()))
-            }
-            if (tree.parentNode !is Lambda) {
-                append(dfs(tree.rightChild()))
-            }
+            appendln("$id -> {${getId(tree.leftChild())}};")
+            appendln("$id -> {${getId(tree.rightChild())}};")
+//            if (tree.parentNode !is Lambda) {
+//                append(dfs(tree.leftChild()))
+//            }
+//            if (tree.parentNode !is Lambda) {
+//                append(dfs(tree.rightChild()))
+//            }
+            append(dfs(tree.leftChild()))
+            append(dfs(tree.rightChild()))
         }
         if (tree is Lambda) {
+            appendln("$id -> {${getId(tree.leftChild())}};")
+            appendln("$id -> {${getId(tree.rightChild())}};")
             append(dfs(tree.leftChild()))
 //            if (tree.right !== tree.left) {
                 append(dfs(tree.rightChild()))
@@ -78,6 +84,7 @@ object TreePrinter {
         }
 
         if (tree is NodeWrapper) {
+            appendln("$id -> {${getId(tree.leftChild())}};")
             append(dfs(tree.leftChild()))
         }
 

@@ -1,5 +1,7 @@
 package ru.ifmo.parser.expression.operations
 
+import ru.ifmo.A
+import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
@@ -26,6 +28,10 @@ class Lambda(var left: Node, var right: Node): Node {
     override fun printNode() = "(\\${left.printNode()}.${right.printNode()})"
 
     override fun getBReduction(): Node? = right.getBReduction()
+
+    override fun createCopy(): Node {
+        return Lambda(left.createCopy(),right.createCopy())
+    }
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
         if (right === left) return Lambda(left,right)
@@ -62,6 +68,8 @@ class Lambda(var left: Node, var right: Node): Node {
             right.setParent(this)
             right.normalizeLinks(listNode)
         }
+//        Painter.draw(A.treeMy!!) // debug
+//        Painter.draw(this) // debug
         if (oldVariableWrapper != null) {
             listNode[leftVariable.printNode()] = oldVariableWrapper
         } else {
@@ -75,5 +83,34 @@ class Lambda(var left: Node, var right: Node): Node {
         right.renameLambdaVariables()
     }
 
+    override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
+        val leftVariable = left as Variable
+        val oldValue = leftVariable.printNode()
+        val oldVariable = listNode[oldValue]
+
+        leftVariable.node = "v${Node.indexVariable}"
+        ++Node.indexVariable
+
+//        ((left as NodeWrapper).node as Variable).node = "v${Node.indexVariable}"
+        listNode[oldValue] = leftVariable.printNode()
+        right.newRenameLambdaVariables(listNode)
+
+        if (oldVariable != null) {
+            listNode[oldValue] = oldVariable
+        } else {
+            listNode.remove(oldValue)
+        }
+    }
+
     override fun bReduction() {}
+
+    override fun oldCreateCopy(listNode: MutableMap<String, NodeWrapper>): Node {
+        if (right === left) return Lambda(left.oldCreateCopy(listNode), right.oldCreateCopy(listNode))
+        var rightNew = right
+        while (rightNew is NodeWrapper) {
+            rightNew = rightNew.leftChild()!!
+        }
+
+        return Lambda(left.oldCreateCopy(listNode), rightNew.oldCreateCopy(listNode))
+    }
 }

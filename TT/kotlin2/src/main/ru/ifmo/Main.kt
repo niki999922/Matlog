@@ -8,6 +8,11 @@ import ru.ifmo.parser.expression.values.NodeWrapper
 import ru.ifmo.parser.expression.values.Variable
 import kotlin.concurrent.thread
 
+class A {
+    companion object {
+        var treeMy:Node? = null
+    }
+}
 
 fun main() {
 //    var input = BufferedReader(InputStreamReader(System.`in`)).readLines().joinToString("\n")
@@ -21,15 +26,26 @@ fun main() {
 //    val was = "(\\a.(\\b.\\a.a b) a) (e d)"
 //    val was = "((\\a.(\\x.a) c) x)"
 //    val was = "(\\a.(\\b.\\a.a b) a) e"
-    val was = "(\\x.x x) ((\\x.x) (\\x.x))"
+//    val was = "(\\x.x x) ((\\x.x) (\\x.x))"
 //    val was = "(\\x.x x x x) ((\\x.x) (\\x.x))"
+//    val was = "(\\x.x x) (\\x.x x)"
+//    val was = "(\\f.\\x.f f f x) (\\f.\\x.f f f x)"
+//    Painter.draw(parser.parse("\\x.(\\f.\\x.f f x) (\\f.\\x.f f x) x"))
+
+//    val was = "(\\f.\\x.f (f x)) (\\f.\\x.f (f x))"
+//    val was = "(\\a.\\b.a)(\\a.\\b.a)(\\a.\\b.b)"
+    val was = "(\\x.x x)(\\x.x x)"
+//    val was = "(\\f.f f f) (\\x.x)"
     var tree = parser.parse(was)
     tree = NodeWrapper(tree)
+    A.treeMy = tree
+//    Painter.draw(tree)
     tree.normalizeLinks(mutableMapOf())
     normalizeRoot(tree)
+    A.treeMy = tree
 
     tree.renameLambdaVariables()
-    Node.indexVariable = 0
+//    Node.indexVariable = 0
 
 
     println("was     : $was")
@@ -45,11 +61,12 @@ fun main() {
     Painter.draw(tree)
     var redux = tree.getBReduction()
     while (redux != null) {
-        Thread.sleep(1000)
+        Thread.sleep(200)
         redux.bReduction()
+//        println("tree ${Painter.ind}  : ${tree.printNode()}")
+        redux = tree.getBReduction()
         println("tree ${Painter.ind}  : ${tree.printNode()}")
         Painter.draw(tree)
-        redux = tree.getBReduction()
     }
     println("\ntree in end: ${tree.printNode()}")
 //    println()

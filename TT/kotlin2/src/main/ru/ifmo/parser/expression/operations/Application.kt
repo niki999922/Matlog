@@ -1,5 +1,7 @@
 package ru.ifmo.parser.expression.operations
 
+import ru.ifmo.A
+import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
@@ -32,16 +34,12 @@ class Application(private var left: Node, private var right: Node) : Node {
                 (left as NodeWrapper).node = ((left as NodeWrapper).node as NodeWrapper).node
             }
             (left as NodeWrapper).node.setParent(left)
-//            left = (left as NodeWrapper).node
-//            left.setParent(this)
         }
         if (right is NodeWrapper) {
             while ((right as NodeWrapper).node is NodeWrapper) {
                 (right as NodeWrapper).node = ((right as NodeWrapper).node as NodeWrapper).node
             }
             (right as NodeWrapper).node.setParent(right)
-//            right = (right as NodeWrapper).node
-//            right.setParent(this)
         }
 
 
@@ -57,13 +55,22 @@ class Application(private var left: Node, private var right: Node) : Node {
         }
         if (left is NodeWrapper) {
             if ((left as NodeWrapper).node is Lambda) {
-                (left as NodeWrapper).node.setParent(this)
-                left = (left as NodeWrapper).node
+                var copy = (left as NodeWrapper).node.createCopy()
+                copy.setParent(this)
+                left = copy
+                left.normalizeLinks(mutableMapOf())
+                left.renameLambdaVariables()    //need remove??????????????????
+//                (left as NodeWrapper).node.setParent(this)
+//                left = (left as NodeWrapper).node
                 return this
             }
         }
 
         return left.getBReduction() ?: right.getBReduction()
+    }
+
+    override fun createCopy(): Node {
+        return Application(left.createCopy(),right.createCopy())
     }
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>) : Node {
@@ -108,6 +115,7 @@ class Application(private var left: Node, private var right: Node) : Node {
             left.normalizeLinks(listNode)
         }
 
+
         if (right is Variable) {
             val rightVar = right as Variable
             listNode[rightVar.printNode()].let {
@@ -121,6 +129,8 @@ class Application(private var left: Node, private var right: Node) : Node {
         }
         left.setParent(this)
         right.setParent(this)
+//        Painter.draw(A.treeMy!!) //debug
+//        Painter.draw(this) //debug
     }
 
     override fun renameLambdaVariables() {
@@ -128,12 +138,17 @@ class Application(private var left: Node, private var right: Node) : Node {
         right.renameLambdaVariables()
     }
 
+    override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
+        left.newRenameLambdaVariables(listNode)
+        right.newRenameLambdaVariables(listNode)
+    }
+
     override fun bReduction() {
         val leftLambda = left as Lambda
+//        leftLambda.normalizeLinks(mutableMapOf()) //!!!!!!!!!!!!!!!!!!!!
         val lambdaArgWrapper = (leftLambda.leftChild() as NodeWrapper)
 
-
-        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
+//        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
 
         if (right is NodeWrapper) {
             (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
@@ -141,7 +156,6 @@ class Application(private var left: Node, private var right: Node) : Node {
         } else {
             right.setParent(lambdaArgWrapper)
             lambdaArgWrapper.node = right
-
         }
         if (parentNode != null) {
             if (parentNode is NodeWrapper) {
@@ -197,5 +211,36 @@ class Application(private var left: Node, private var right: Node) : Node {
         }
 //        leftLambda.rightChild().openWrapper(mutableSetOf(lambdaArgWrapper))
 
+    }
+
+    override fun oldCreateCopy(listNode: MutableMap<String, NodeWrapper>): Node {
+        if (left is Variable) {
+            val leftVar = left as Variable
+            listNode[leftVar.printNode()].let {
+                if (it == null) return@let
+                if (leftVar.printNode() == it.leftChild().printNode()) {
+                    left = it
+                }
+            }
+        } else {
+            left.oldCreateCopy(listNode)
+        }
+
+        if (right is Variable) {
+            val rightVar = right as Variable
+            listNode[rightVar.printNode()].let {
+                if (it == null) return@let
+                if (rightVar.printNode() == it.leftChild()!!.printNode()) {
+                    right = it
+                }
+            }
+        } else {
+            right.oldCreateCopy(listNode)
+        }
+
+//        left.setParent(this)
+//        right.setParent(this)
+
+        return Application(left.oldCreateCopy(listNode),right.oldCreateCopy(listNode))
     }
 }
