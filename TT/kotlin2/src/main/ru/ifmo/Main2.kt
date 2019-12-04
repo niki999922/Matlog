@@ -21,7 +21,7 @@ fun main() {
 
 
 
-    val was = "(\\a.a) d"
+//    val was = "(\\a.a) d"
 //    val was = "\\a.\\b.a b"
 //    val was = "\\a.(\\b.(\\a.a)) a"
 //    val was = "(\\a.(\\b.\\a.a b) a) (e d)"
@@ -42,6 +42,11 @@ fun main() {
 
 
 //My StackTrace
+//    val was = "a ((\\a.b b) e)"
+//    val was = "a ((\\a.a b) e)"
+//    val was = "a ((\\a.b a) e)"
+//    val was = "a ((\\a.a a) e)"
+
 //    val was = "a b ((\\a.\\b.a b) e)"
 
 
@@ -69,11 +74,11 @@ fun main() {
 //    val was = "\\a.(\\a.\\f.a (\\s.a)) (\\n.\\y.\\v.y (\\v.\\u.u w (\\v.\\n.(\\t.h) (\\y.x)) n))"
 //    val was = "(\\p.p p) (\\u.\\m.(u (\\u.m)) u)"
 //    val was = "(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))"
+//    val was = "(\\x.(x a) (x b)) (\\y.(\\z.z) a)"
 
 
 //Infinity loop
-//    val was = "(\\x.(x a) (x b)) (\\y.(\\z.z) a)"
-//    val was = "(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)"
+    val was = "(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)"
 //    val was = "(\\v.(\\p.p (z p) (\\p.v)) v) (\\n.\\i.n i ((\\a.z) u) )"
 //    val was = "(((\\n.((((((\\f.(f o)) (\\t.((\\v.(n (\\d.k))) (\\j.(\\a.(t (\\a.((\\i.(\\r.v)) ((\\p.(\\l.((\\z.g) (\\s.((\\w.((\\e.(\\k.(\\p.(p (\\q.e))))) s)) (\\k.((a (n j)) (\\r.t)))))))) n))))))))) k) r) n) (n (n (\\x.(\\p.(\\h.(\\h.(\\l.(w l)))))))))) (\\e.(((((\\f.(e ((((\\f.(\\d.(x (e ((\\q.q) (\\h.(v u))))))) (\\l.((\\i.i) ((\\d.q) (\\i.g))))) f) (\\c.(\\s.(\\h.(f (\\l.w)))))))) (\\j.(\\p.(\\i.j)))) a) (\\e.(\\b.(e ((\\d.(d n)) n))))) u))) ((\\q.(\\n.(y (\\y.(\\y.((\\b.((\\j.(((\\d.(\\r.(n ((\\n.(\\y.(\\q.(b (((\\f.(b q)) (\\j.(\\w.(\\j.f)))) (y (((\\o.(\\x.((\\c.r) b))) i) q))))))) (\\u.((\\f.((((\\c.n) i) (\\p.((\\w.((j (y ((\\t.(\\k.(b k))) (\\h.(\\i.a))))) (s f))) (\\n.(h w))))) (\\c.(c ((\\c.d) (c d)))))) (\\a.(\\r.q)))))))) n) (((b j) (n (\\g.y))) y))) b)) h)))))) (\\w.(\\n.(\\f.((w (\\w.n)) n))))))"
 //    val was = "(((\\w.(((w w) ((\\b.(((b w) w) (\\b.(\\s.(\\r.(\\x.(\\p.(\\d.(((((b o) c) (\\p.p)) (\\j.(\\y.(\\y.w)))) b))))))))) c)) w)) (\\f.(((\\c.f) (f (((f ((\\z.f) (f f))) f) f))) v))) (\\m.m))"
@@ -110,15 +115,14 @@ fun main() {
 
     println("Starting do B reduction steps:")
     println("tree ${Painter.ind}  : ${tree.printNode()}")
-//    Painter.draw(tree)
+    Painter.draw(tree)
     var redux = tree.getBReduction()
     while (redux != null) {
-//        Thread.sleep(100)
+        Thread.sleep(100)
         redux.bReduction()
-//        println("tree ${Painter.ind}  : ${tree.printNode()}")
         redux = tree.getBReduction()
         println("tree ${Painter.ind}  : ${tree.printNode()}")
-//        Painter.draw(tree)
+        Painter.draw(tree)
     }
     println("\ntree in end: ${tree.printNode()}")
 //    println()

@@ -7,9 +7,9 @@ import ru.ifmo.parser.expression.values.NodeWrapper
 
 fun main() {
 //    Test.`my ok tests`()
-    Test.`my fail tests`()
+//    Test.`my fail tests`()
 //    Test.`other ok tests`()
-//    Test.`other loop tests`()
+    Test.`other loop tests`()
 //    Test.`other StackOverflow tests`()
 }
 
@@ -35,6 +35,8 @@ class Test {
             list.add("(\\x.(\\a. a a) x x x) ((\\a.a) b)")
             list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
             list.add("(\\f.\\x.f) (x) a")
+            list.add("a ((\\a.a b) e)")
+            list.add("a b ((\\a.\\b.a b) e)")
             runTestsList(list)
         }
 
@@ -42,7 +44,6 @@ class Test {
             val list = mutableListOf<String>()
 
             //My StackTrace
-            list.add("a b ((\\a.\\b.a b) e)")
             runTestsList(list)
         }
 
@@ -66,12 +67,12 @@ class Test {
             list.add("\\a.(\\a.\\f.a (\\s.a)) (\\n.\\y.\\v.y (\\v.\\u.u w (\\v.\\n.(\\t.h) (\\y.x)) n))")
             list.add("(\\p.p p) (\\u.\\m.(u (\\u.m)) u)")
             list.add("(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))")
+            list.add("(\\x.(x a) (x b)) (\\y.(\\z.z) a)")
             runTestsList(list)
         }
 
         fun `other loop tests`() {
             val list = mutableListOf<String>()
-            list.add("(\\x.(x a) (x b)) (\\y.(\\z.z) a)")
             list.add("(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)")
             list.add("(\\v.(\\p.p (z p) (\\p.v)) v) (\\n.\\i.n i ((\\a.z) u) )")
             list.add("(((\\n.((((((\\f.(f o)) (\\t.((\\v.(n (\\d.k))) (\\j.(\\a.(t (\\a.((\\i.(\\r.v)) ((\\p.(\\l.((\\z.g) (\\s.((\\w.((\\e.(\\k.(\\p.(p (\\q.e))))) s)) (\\k.((a (n j)) (\\r.t)))))))) n))))))))) k) r) n) (n (n (\\x.(\\p.(\\h.(\\h.(\\l.(w l)))))))))) (\\e.(((((\\f.(e ((((\\f.(\\d.(x (e ((\\q.q) (\\h.(v u))))))) (\\l.((\\i.i) ((\\d.q) (\\i.g))))) f) (\\c.(\\s.(\\h.(f (\\l.w)))))))) (\\j.(\\p.(\\i.j)))) a) (\\e.(\\b.(e ((\\d.(d n)) n))))) u))) ((\\q.(\\n.(y (\\y.(\\y.((\\b.((\\j.(((\\d.(\\r.(n ((\\n.(\\y.(\\q.(b (((\\f.(b q)) (\\j.(\\w.(\\j.f)))) (y (((\\o.(\\x.((\\c.r) b))) i) q))))))) (\\u.((\\f.((((\\c.n) i) (\\p.((\\w.((j (y ((\\t.(\\k.(b k))) (\\h.(\\i.a))))) (s f))) (\\n.(h w))))) (\\c.(c ((\\c.d) (c d)))))) (\\a.(\\r.q)))))))) n) (((b j) (n (\\g.y))) y))) b)) h)))))) (\\w.(\\n.(\\f.((w (\\w.n)) n))))))")
@@ -111,6 +112,7 @@ class Test {
                 }
                 println()
             }
+            println("Complete: ${list.size} tests")
         }
     }
 }

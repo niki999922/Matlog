@@ -29,18 +29,18 @@ class Application(private var left: Node, private var right: Node) : Node {
     override fun printNode() = "(${left.printNode()} ${right.printNode()})"
 
     override fun getBReduction(): Node? {
-        if (left is NodeWrapper) {
-            while ((left as NodeWrapper).node is NodeWrapper) {
-                (left as NodeWrapper).node = ((left as NodeWrapper).node as NodeWrapper).node
-            }
-            (left as NodeWrapper).node.setParent(left)
-        }
-        if (right is NodeWrapper) {
-            while ((right as NodeWrapper).node is NodeWrapper) {
-                (right as NodeWrapper).node = ((right as NodeWrapper).node as NodeWrapper).node
-            }
-            (right as NodeWrapper).node.setParent(right)
-        }
+//        if (left is NodeWrapper) {
+//            while ((left as NodeWrapper).node is NodeWrapper) {
+//                (left as NodeWrapper).node = ((left as NodeWrapper).node as NodeWrapper).node
+//            }
+//            (left as NodeWrapper).node.setParent(left)
+//        }
+//        if (right is NodeWrapper) {
+//            while ((right as NodeWrapper).node is NodeWrapper) {
+//                (right as NodeWrapper).node = ((right as NodeWrapper).node as NodeWrapper).node
+//            }
+//            (right as NodeWrapper).node.setParent(right)
+//        }
 
 
 //        while (left is NodeWrapper) {
@@ -59,7 +59,7 @@ class Application(private var left: Node, private var right: Node) : Node {
                 copy.setParent(this)
                 left = copy
                 left.normalizeLinks(mutableMapOf())
-                left.renameLambdaVariables()    //need remove??????????????????
+//                left.renameLambdaVariables()    //need remove??????????????????
 //                (left as NodeWrapper).node.setParent(this)
 //                left = (left as NodeWrapper).node
                 return this
@@ -203,14 +203,20 @@ class Application(private var left: Node, private var right: Node) : Node {
 //                leftLambda.rightChild().setParent(parentNode!!)
 //                (parentNode as NodeWrapper).node = sonPar
 
-
-                (parentNode as Application).left = leftLambda.rightChild()
-                leftLambda.rightChild().setParent(parentNode as Application)
+                var prevApl = parentNode as Application
+                if ((parentNode as Application).leftChild() === this) {
+                    (parentNode as Application).left = leftLambda.rightChild()
+                } else {
+                    (parentNode as Application).right = leftLambda.rightChild()
+                }
+//                (parentNode as Application).left = leftLambda.rightChild()
+                leftLambda.rightChild().setParent(prevApl)
                 return
             }
             if (parentNode is Lambda) {
+                var prevLam = parentNode as Lambda
                 (parentNode as Lambda).right = leftLambda.rightChild()
-                leftLambda.rightChild().setParent(parentNode as Lambda)
+                leftLambda.rightChild().setParent(prevLam)
                 return
             }
 
