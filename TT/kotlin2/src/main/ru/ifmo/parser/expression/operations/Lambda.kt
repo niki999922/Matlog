@@ -64,7 +64,7 @@ class Lambda(var left: Node, var right: Node): Node {
             val rightVar = right as Variable
             listNode[rightVar.printNode()].let {
                 if (it == null) return@let
-                if (rightVar.printNode() == it.leftChild()!!.printNode()) {
+                if (rightVar.printNode() == it.leftChild().printNode()) {
                     right = it
 
                 }
@@ -113,7 +113,7 @@ class Lambda(var left: Node, var right: Node): Node {
         if (right === left) return Lambda(left.oldCreateCopy(listNode), right.oldCreateCopy(listNode))
         var rightNew = right
         while (rightNew is NodeWrapper) {
-            rightNew = rightNew.leftChild()!!
+            rightNew = rightNew.leftChild()
         }
 
         return Lambda(left.oldCreateCopy(listNode), rightNew.oldCreateCopy(listNode))

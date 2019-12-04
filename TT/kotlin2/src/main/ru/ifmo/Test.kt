@@ -11,6 +11,7 @@ fun main() {
 //    Test.`other ok tests`()
     Test.`other loop tests`()
 //    Test.`other StackOverflow tests`()
+//    Test.`Stas tests`()
 }
 
 class Test {
@@ -67,12 +68,12 @@ class Test {
             list.add("\\a.(\\a.\\f.a (\\s.a)) (\\n.\\y.\\v.y (\\v.\\u.u w (\\v.\\n.(\\t.h) (\\y.x)) n))")
             list.add("(\\p.p p) (\\u.\\m.(u (\\u.m)) u)")
             list.add("(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))")
-            list.add("(\\x.(x a) (x b)) (\\y.(\\z.z) a)")
             runTestsList(list)
         }
 
         fun `other loop tests`() {
             val list = mutableListOf<String>()
+            list.add("(\\x.(x a) (x b)) (\\y.(\\z.z) a)")
             list.add("(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)")
             list.add("(\\v.(\\p.p (z p) (\\p.v)) v) (\\n.\\i.n i ((\\a.z) u) )")
             list.add("(((\\n.((((((\\f.(f o)) (\\t.((\\v.(n (\\d.k))) (\\j.(\\a.(t (\\a.((\\i.(\\r.v)) ((\\p.(\\l.((\\z.g) (\\s.((\\w.((\\e.(\\k.(\\p.(p (\\q.e))))) s)) (\\k.((a (n j)) (\\r.t)))))))) n))))))))) k) r) n) (n (n (\\x.(\\p.(\\h.(\\h.(\\l.(w l)))))))))) (\\e.(((((\\f.(e ((((\\f.(\\d.(x (e ((\\q.q) (\\h.(v u))))))) (\\l.((\\i.i) ((\\d.q) (\\i.g))))) f) (\\c.(\\s.(\\h.(f (\\l.w)))))))) (\\j.(\\p.(\\i.j)))) a) (\\e.(\\b.(e ((\\d.(d n)) n))))) u))) ((\\q.(\\n.(y (\\y.(\\y.((\\b.((\\j.(((\\d.(\\r.(n ((\\n.(\\y.(\\q.(b (((\\f.(b q)) (\\j.(\\w.(\\j.f)))) (y (((\\o.(\\x.((\\c.r) b))) i) q))))))) (\\u.((\\f.((((\\c.n) i) (\\p.((\\w.((j (y ((\\t.(\\k.(b k))) (\\h.(\\i.a))))) (s f))) (\\n.(h w))))) (\\c.(c ((\\c.d) (c d)))))) (\\a.(\\r.q)))))))) n) (((b j) (n (\\g.y))) y))) b)) h)))))) (\\w.(\\n.(\\f.((w (\\w.n)) n))))))")
@@ -88,6 +89,16 @@ class Test {
             list.add("(((\\n.((\\w.(n (s n))) (\\t.(t t)))) ((\\d.(((d z) (((i s) (x d)) (\\d.(n d)))) d)) (\\x.((\\w.((\\c.x) (\\g.m))) (((x (\\h.((\\h.(((t h) (\\t.(\\u.(((\\h.(\\p.(\\d.((\\q.(\\e.(\\f.x))) (((x (\\a.(\\o.p))) d) h))))) (\\g.(((\\e.((\\g.((\\i.h) e)) u)) h) ((((j h) h) (g w)) (\\r.((h u) (\\n.r))))))) (\\n.(\\f.h)))))) (\\w.x))) x))) (\\r.x)) x))))) (((\\b.(\\l.(l (((\\b.b) ((l z) (b (l ((\\z.c) (\\a.(\\a.((\\n.(((\\v.((\\c.(\\d.((a v) v))) (n b))) a) (\\t.(((\\y.(\\n.((\\h.(\\g.(\\b.y))) b))) (\\s.(a t))) (b b))))) ((\\n.n) (r (l l))))))))))) (b ((b ((\\j.(b (\\p.(b j)))) (e (\\j.((\\a.(((\\y.(\\y.(l (\\a.((j c) a))))) (\\w.u)) (\\f.b))) b))))) w)))))) b) (\\m.((\\e.(\\s.s)) m))))")
             list.add("(w ((((\\a.(\\g.g)) i) ((\\u.(e (u (\\g.((\\c.(\\n.(((u g) (\\g.(\\s.(g (x n))))) (g u)))) (((\\s.(h u)) q) (g u))))))) (\\b.(\\c.((\\n.(\\k.(((b ((\\m.k) ((\\g.(\\c.(\\p.(c (\\p.(\\f.(\\n.(\\i.(k v))))))))) (n y)))) n) (\\o.k)))) c))))) (((\\v.((x ((\\v.(\\z.(\\w.f))) ((\\q.((q v) v)) v))) (\\g.(\\i.(\\b.(\\d.((\\x.t) (\\u.(\\j.(e d)))))))))) r) t)))")
             list.add("(\\a.((\\r.(\\t.(\\h.(\\p.(\\q.((\\q.(\\f.(i (\\x.(\\k.(q (\\c.(c (\\b.(q ((\\h.x) q))))))))))) (\\r.(\\b.(\\x.(\\v.(y (t (\\m.(r (\\n.((h (\\b.((\\f.(((\\v.((b (\\r.(q (\\j.(\\c.(\\g.(h (\\m.s)))))))) (\\a.(\\z.(v (\\l.(\\z.(\\s.(\\c.(\\k.(\\e.(s b)))))))))))) h) (m a))) x))) (\\g.(m ((\\t.(((\\d.(\\c.(\\v.(x ((((\\d.((\\f.(\\m.(\\x.((\\j.(\\k.(\\h.(\\f.(\\s.(r (\\r.(\\r.(\\v.(x (\\j.(\\d.c)))))))))))) (\\e.(\\k.e)))))) (\\b.((\\g.(((\\q.(\\z.(v (r r)))) c) t)) (\\p.(t k)))))) (\\z.(\\p.w))) c) (\\q.((\\g.(\\d.r)) d))))))) v) a)) n))))))))))))))))))) (a (\\i.(\\e.(((a (\\p.(s a))) (i (k (\\n.(a ((n i) ((\\z.(e (\\x.z))) a))))))) (a ((\\q.(\\p.(\\i.q))) (\\o.(\\i.(\\e.(\\u.(\\q.((\\i.(\\m.(\\m.u))) (((\\w.(\\o.(q o))) (\\e.((u e) i))) (i j))))))))))))))))")
+            runTestsList(list)
+        }
+
+        fun `Stas tests`() {
+            val list = mutableListOf<String>()
+            list.add("(\\x.(\\y.(\\z.(\\a.( a b y z) a z)f y x) x ax t ax)) z y a")
+            list.add("((\\y.(\\z.(\\a. a b y z) a z)f y z) z ax t ax) y a")
+            list.add("(\\x. x x x x)((\\x.  x)(\\x.  x))")
+
+//            list.add("(\\x. x x x)(\\x. x x x)\n") //10000 10000
             runTestsList(list)
         }
 

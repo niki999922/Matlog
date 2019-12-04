@@ -54,16 +54,30 @@ class Application(private var left: Node, private var right: Node) : Node {
             return this
         }
         if (left is NodeWrapper) {
-            if ((left as NodeWrapper).node is Lambda) {
+            var l = left as NodeWrapper
+            while (l.node is NodeWrapper) {
+                l = l.node as NodeWrapper
+            }
+            if (l.node is Lambda) {
                 var copy = (left as NodeWrapper).node.createCopy()
                 copy.setParent(this)
                 left = copy
                 left.normalizeLinks(mutableMapOf())
+                return this
+            }
+
+
+
+//            if ((left as NodeWrapper).node is Lambda) {
+//                var copy = (left as NodeWrapper).node.createCopy()
+//                copy.setParent(this)
+//                left = copy
+//                left.normalizeLinks(mutableMapOf())
 //                left.renameLambdaVariables()    //need remove??????????????????
 //                (left as NodeWrapper).node.setParent(this)
 //                left = (left as NodeWrapper).node
-                return this
-            }
+//                return this
+//            }
         }
 
         return left.getBReduction() ?: right.getBReduction()
@@ -112,7 +126,7 @@ class Application(private var left: Node, private var right: Node) : Node {
             val leftVar = left as Variable
             listNode[leftVar.printNode()].let {
                 if (it == null) return@let
-                if (leftVar.printNode() == it.leftChild()!!.printNode()) {
+                if (leftVar.printNode() == it.leftChild().printNode()) {
                     left = it
                 }
             }
@@ -125,7 +139,7 @@ class Application(private var left: Node, private var right: Node) : Node {
             val rightVar = right as Variable
             listNode[rightVar.printNode()].let {
                 if (it == null) return@let
-                if (rightVar.printNode() == it.leftChild()!!.printNode()) {
+                if (rightVar.printNode() == it.leftChild().printNode()) {
                     right = it
                 }
             }
@@ -246,7 +260,7 @@ class Application(private var left: Node, private var right: Node) : Node {
             val rightVar = right as Variable
             listNode[rightVar.printNode()].let {
                 if (it == null) return@let
-                if (rightVar.printNode() == it.leftChild()!!.printNode()) {
+                if (rightVar.printNode() == it.leftChild().printNode()) {
                     right = it
                 }
             }
