@@ -11,19 +11,18 @@ interface Node {
     fun setParent(node : Node)
     fun printNode() : String
     fun bReduction()
-    fun newRenameLambdaVariables(listNode: MutableMap<String, String>)
     fun createCopy() : Node
-
     fun getBReduction(): Node?
+    fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>)
 
 
+    fun renameLambdaVariables()
 
     /**
      * depricated
      */
-    fun renameLambdaVariables()
     fun openWrapper(listNode: MutableSet<NodeWrapper>): Node
-    fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>)
+    fun newRenameLambdaVariables(listNode: MutableMap<String, String>)
     fun oldCreateCopy(listNode: MutableMap<String, NodeWrapper>) : Node
 
 
