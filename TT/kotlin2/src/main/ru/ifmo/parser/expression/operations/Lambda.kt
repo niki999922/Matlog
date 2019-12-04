@@ -83,7 +83,7 @@ class Lambda(var left: Node, var right: Node): Node {
     }
 
     override fun renameLambdaVariables() {
-        ((left as NodeWrapper).node as Variable).node = "v${Node.indexVariable}"
+        ((left as NodeWrapper).node as Variable).node = "vtyh56${Node.indexVariable}"
         ++Node.indexVariable
         right.renameLambdaVariables()
     }
@@ -93,7 +93,7 @@ class Lambda(var left: Node, var right: Node): Node {
         val oldValue = leftVariable.printNode()
         val oldVariable = listNode[oldValue]
 
-        leftVariable.node = "v${Node.indexVariable}"
+        leftVariable.node = "vtyh56${Node.indexVariable}"
         ++Node.indexVariable
 
 //        ((left as NodeWrapper).node as Variable).node = "v${Node.indexVariable}"

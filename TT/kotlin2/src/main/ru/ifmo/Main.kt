@@ -10,6 +10,10 @@ fun main() {
     var input = BufferedReader(InputStreamReader(System.`in`)).readLines().joinToString("\n")
     val parser = ParserLambdaExpression()
     var tree = parser.parse(input)
+    if (m == 1) {
+        println(tree.printNode())
+        return
+    }
 
     tree = NodeWrapper(tree)
     tree.normalizeLinks(mutableMapOf())
@@ -17,11 +21,12 @@ fun main() {
 
     tree.renameLambdaVariables()
 //    Node.indexVariable = 0
-// (\a.(\b.(\c.(\d.d)c)b)a) f
+// (\a.(\b.(\c.(\d.d)c4 )b)a) f
 
     var redux = tree.getBReduction()
     var counter = 1
     var borderCounter = 1
+    var flag = true
     println(tree.printNode())
     while (redux != null) {
         redux.bReduction()
@@ -33,10 +38,14 @@ fun main() {
             if (counter != 0 ) {
                 println(tree.printNode())
             }
+            flag = false
             break
         }
         redux = tree.getBReduction()
         ++counter
         ++borderCounter
+    }
+    if (flag && counter != 1) {
+        println(tree.printNode())
     }
 }

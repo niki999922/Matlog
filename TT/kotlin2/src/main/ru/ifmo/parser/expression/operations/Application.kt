@@ -51,6 +51,12 @@ class Application(private var left: Node, private var right: Node) : Node {
 //        }
 
         if (left is Lambda) {
+            var copy = (left as Lambda).createCopy()
+            copy.setParent(this)
+            left = copy
+            left.normalizeLinks(mutableMapOf())
+            left.renameLambdaVariables()//delete
+
             return this
         }
         if (left is NodeWrapper) {
@@ -63,6 +69,7 @@ class Application(private var left: Node, private var right: Node) : Node {
                 copy.setParent(this)
                 left = copy
                 left.normalizeLinks(mutableMapOf())
+                left.renameLambdaVariables()//delete
                 return this
             }
 
