@@ -30,7 +30,11 @@ class Lambda(var left: Node, var right: Node): Node {
     override fun getBReduction(): Node? = right.getBReduction()
 
     override fun createCopy(): Node {
-        return Lambda(left.createCopy(),right.createCopy())
+        var l = left.createCopy()
+        var r = right.createCopy()
+        l.setParent(this)
+        r.setParent(this)
+        return Lambda(l,r)
     }
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
@@ -62,6 +66,7 @@ class Lambda(var left: Node, var right: Node): Node {
                 if (it == null) return@let
                 if (rightVar.printNode() == it.leftChild()!!.printNode()) {
                     right = it
+
                 }
             }
         } else {

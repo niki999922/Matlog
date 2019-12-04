@@ -30,7 +30,9 @@ data class NodeWrapper(var node: Node) : Node {
     override fun getBReduction(): Node? = node.getBReduction()
 
     override fun createCopy(): Node {
-        return node.createCopy()
+        var copy =  node.createCopy()
+        copy.setParent(this)
+        return copy
     }
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {

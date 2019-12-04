@@ -70,7 +70,12 @@ class Application(private var left: Node, private var right: Node) : Node {
     }
 
     override fun createCopy(): Node {
-        return Application(left.createCopy(),right.createCopy())
+        var l = left.createCopy()
+        var r = right.createCopy()
+        l.setParent(this)
+        r.setParent(this)
+
+        return Application(l, r)
     }
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>) : Node {
@@ -150,13 +155,16 @@ class Application(private var left: Node, private var right: Node) : Node {
 
 //        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
 
-        if (right is NodeWrapper) {
-            (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
-            lambdaArgWrapper.node = (right as NodeWrapper).node
-        } else {
+
+//        if (right is NodeWrapper) {
+//            (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
+//            lambdaArgWrapper.node = (right as NodeWrapper).node
+//        } else {
             right.setParent(lambdaArgWrapper)
             lambdaArgWrapper.node = right
-        }
+//        }
+
+
         if (parentNode != null) {
             if (parentNode is NodeWrapper) {
 //                var tmp: Node = parentNode as NodeWrapper
@@ -182,10 +190,11 @@ class Application(private var left: Node, private var right: Node) : Node {
 //                return
 
                 var prevPar = parentNode as NodeWrapper
-                var sonPar = leftLambda.right
+//                var sonPar = leftLambda.right
 
-                leftLambda.rightChild().setParent(parentNode!!)
-                (parentNode as NodeWrapper).node = sonPar
+                (parentNode as NodeWrapper).node = leftLambda.right
+//                leftLambda.rightChild().setParent(parentNode!!)
+                leftLambda.rightChild().setParent(prevPar)
 //                leftLambda.rightChild().setParent(parentNode as NodeWrapper)
 //                (parentNode as NodeWrapper).node = leftLambda.rightChild()
                 return
@@ -204,6 +213,7 @@ class Application(private var left: Node, private var right: Node) : Node {
                 leftLambda.rightChild().setParent(parentNode as Lambda)
                 return
             }
+
 
         } else {
 
