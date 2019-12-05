@@ -11,17 +11,17 @@ import java.io.File
 object TreePrinter {
 
     private fun createIdLine(tree: Node, id: Int): String = "$id " +
-            "[label=\"${tree.javaClass.name.split('.').last()} ${if (tree is Variable) {
+            "[label=\"${tree.javaClass.name.split('.').last()} (p: ${tree.getValueParentCount()}) ${if (tree is Variable) {
                 tree.node
             } else {
                 ""
-            }} ${tree.debugInd()}\"" +
+            }} (deb: ${tree.debugInd()})\"" +
             (if (tree is Variable) ", color=red" else "") +
             "];"
 
     private fun getId(tree: Node) = System.identityHashCode(tree)
 
-    private fun getChildrenLine(tree: Node, id: Int = 0) = buildString {
+    private fun getChildrenLine(tree: Node) = buildString {
         if (tree is Application) {
 //            appendln("$id -> {${getId(tree.leftChild())}};")
 //            appendln("$id -> {${getId(tree.rightChild())}};")

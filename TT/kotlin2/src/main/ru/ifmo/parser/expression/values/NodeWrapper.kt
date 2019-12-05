@@ -6,6 +6,8 @@ import ru.ifmo.parser.Node
 
 data class NodeWrapper(var node: Node) : Node {
     var parentNode: Node? = null
+    var parentCount = 0
+
     var debug_i = lazy {
         ++Node.debug_ind
     }
@@ -14,7 +16,14 @@ data class NodeWrapper(var node: Node) : Node {
 
     override fun node() = "Variable Wrapper"
 
-    override fun printNode() = node.printNode()
+    override fun printNode():String {
+        while (node is NodeWrapper && node.getValueParentCount() == 1) {
+            (node as NodeWrapper).node.setParent(this)
+            node = (node as NodeWrapper).node
+        }
+
+        return node.printNode()
+    }
 
     override fun leftChild() = node
 
@@ -25,10 +34,20 @@ data class NodeWrapper(var node: Node) : Node {
     override fun setParent(node: Node) {
         parentNode = node
     }
+    override fun addParentCount() {
+        ++parentCount
+    }
+
+    override fun subParentCount() {
+        --parentCount
+    }
+    override fun setValueParentCount(value: Int) {
+        parentCount = value
+    }
 
 
     override fun getBReduction(): Node? {
-        while (node is NodeWrapper) {
+        while (node is NodeWrapper && node.getValueParentCount() == 1) {
             (node as NodeWrapper).node.setParent(this)
             node = (node as NodeWrapper).node
         }
@@ -45,9 +64,11 @@ data class NodeWrapper(var node: Node) : Node {
         node = node.openWrapper(listNode)
         return this
     }
+    override fun getValueParentCount() = parentCount
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
         node.normalizeLinks(listNode)
+        node.addParentCount()
 //        Painter.draw(A.treeMy!!) //debug
 //        Painter.draw(this) //debug
     }

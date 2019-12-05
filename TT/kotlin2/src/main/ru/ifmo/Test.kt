@@ -152,6 +152,7 @@ class Test {
 
 //                    }
 //                    for (k in 1..m) {
+                        println("$m $k $it")
                         val default_out = System.out
 
                         val fileMe = File("file_me.txt")
@@ -193,6 +194,8 @@ class Test {
                                 print("\n${tree.printNode()}")
                             }
                         }
+
+                        System.setOut(default_out)
 
 
                         val fileOther = File("file_other.txt")

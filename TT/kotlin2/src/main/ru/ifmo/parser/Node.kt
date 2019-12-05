@@ -16,6 +16,12 @@ interface Node {
     fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>)
     fun normalizeLambdaLink(lambdaArgument: NodeWrapper)
 
+    fun addParentCount()
+    fun subParentCount()
+    fun setValueParentCount(value: Int)
+    fun getValueParentCount():Int
+
+
 
     fun renameLambdaVariables()
 

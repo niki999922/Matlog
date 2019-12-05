@@ -4,6 +4,8 @@ import ru.ifmo.parser.Node
 
 data class Variable(var node: String) : Node {
     var parentNode: Node? = null
+    var parentCount = 0
+
 
     var debug_i = lazy {
         ++Node.debug_ind
@@ -31,6 +33,21 @@ data class Variable(var node: String) : Node {
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {}
     override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {}
+
+    override fun addParentCount() {
+        ++parentCount
+    }
+
+    override fun subParentCount() {
+        --parentCount
+    }
+
+    override fun setValueParentCount(value: Int) {
+        parentCount = value
+    }
+
+    override fun getValueParentCount() = parentCount
+
 
     override fun renameLambdaVariables() {}
 

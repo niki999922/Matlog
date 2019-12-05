@@ -8,6 +8,7 @@ import ru.ifmo.parser.expression.values.NodeWrapper
 
 class Lambda(var left: Node, var right: Node): Node {
     var parentNode: Node? = null
+    var parentCount = 0
     var debug_i = lazy {
         ++Node.debug_ind
     }
@@ -25,9 +26,23 @@ class Lambda(var left: Node, var right: Node): Node {
         parentNode = node
     }
 
-    override fun printNode() = "(\\${left.printNode()}.${right.printNode()})"
+    override fun printNode(): String {
+        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
 
-    override fun getBReduction(): Node? = right.getBReduction()
+        return "(\\${left.printNode()}.${right.printNode()})"
+    }
+
+    override fun getBReduction(): Node? {
+        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
+
+        return right.getBReduction()
+    }
 
     override fun createCopy(): Node {
         var l = left.createCopy()
@@ -36,6 +51,17 @@ class Lambda(var left: Node, var right: Node): Node {
         r.setParent(this)
         return Lambda(l,r)
     }
+    override fun addParentCount() {
+        ++parentCount
+    }
+
+    override fun subParentCount() {
+        --parentCount
+    }
+    override fun setValueParentCount(value: Int) {
+        parentCount = value
+    }
+
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
         if (right === left) return Lambda(left,right)
@@ -49,6 +75,8 @@ class Lambda(var left: Node, var right: Node): Node {
         listNode.remove(left as NodeWrapper)
         return res
     }
+    override fun getValueParentCount() = parentCount
+
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
         val leftVariable = left as Variable
@@ -57,7 +85,11 @@ class Lambda(var left: Node, var right: Node): Node {
         val newVariableWrapper = NodeWrapper(leftVariable)
         newVariableWrapper.setParent(this)
         newVariableWrapper.node.setParent(newVariableWrapper)
+        newVariableWrapper.addParentCount()
+        newVariableWrapper.node.addParentCount()
         left = newVariableWrapper
+
+
         listNode[leftVariable.printNode()] = newVariableWrapper
 
         if (right is Variable) {
@@ -66,12 +98,14 @@ class Lambda(var left: Node, var right: Node): Node {
                 if (it == null) return@let
                 if (rightVar.printNode() == it.leftChild().printNode()) {
                     right = it
+                    right.addParentCount()
 
                 }
             }
         } else {
             right.setParent(this)
             right.normalizeLinks(listNode)
+            right.addParentCount()
         }
 //        Painter.draw(A.treeMy!!) // debug
 //        Painter.draw(this) // debug
@@ -99,6 +133,14 @@ class Lambda(var left: Node, var right: Node): Node {
     }
 
     override fun renameLambdaVariables() {
+//        if (left is NodeWrapper) {
+//            ((left as NodeWrapper).node as Variable).node = "vtyh56${Node.indexVariable}"
+//            ++Node.indexVariable
+//        }
+//        right.renameLambdaVariables()
+
+
+
         ((left as NodeWrapper).node as Variable).node = "vtyh56${Node.indexVariable}"
         ++Node.indexVariable
         right.renameLambdaVariables()

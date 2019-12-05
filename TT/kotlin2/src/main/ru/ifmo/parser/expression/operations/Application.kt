@@ -6,8 +6,9 @@ import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
 
-class Application(private var left: Node, private var right: Node) : Node {
+class Application(var left: Node, var right: Node) : Node {
     var parentNode: Node? = null
+    var parentCount = 0
     var debug_i = lazy {
         ++Node.debug_ind
     }
@@ -26,7 +27,27 @@ class Application(private var left: Node, private var right: Node) : Node {
         parentNode = node
     }
 
-    override fun printNode() = "(${left.printNode()} ${right.printNode()})"
+    override fun addParentCount() {
+        ++parentCount
+    }
+
+    override fun subParentCount() {
+        --parentCount
+    }
+
+    override fun printNode(): String {
+        while (left is NodeWrapper && left.getValueParentCount() == 1) {
+            (left as NodeWrapper).node.setParent(this)
+            left = (left as NodeWrapper).node
+        }
+
+        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
+
+        return "(${left.printNode()} ${right.printNode()})"
+    }
 
     override fun getBReduction(): Node? {
 //        if (left is NodeWrapper) {
@@ -43,6 +64,49 @@ class Application(private var left: Node, private var right: Node) : Node {
 //        }
 
 
+//05.12
+        while (left is NodeWrapper && left.getValueParentCount() == 1) {
+            (left as NodeWrapper).node.setParent(this)
+            left = (left as NodeWrapper).node
+        }
+
+        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
+
+//not work this 26 tl
+//        if (right is Application){
+//            var r = right as Application
+//            while (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
+//                    r.left = left
+//                }
+//        }
+
+//not work this
+//        if (left is Application){
+//            var l = left as Application
+//            while (l.right is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.right as NodeWrapper).node)) {
+//                    l.right = right
+//            }
+//        }
+//
+//        if (left is Application){
+//            var r = left as Application
+//            while (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
+//                    r.left = left
+//            }
+//        }
+//
+//
+//        if (right is Application){
+//            var l = right as Application
+//            while (l.right is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.right as NodeWrapper).node)) {
+//                    l.right = right
+//            }
+//        }
+
+
 //        while (left is NodeWrapper) {
 //            left = left.leftChild()!!
 //        }
@@ -54,6 +118,15 @@ class Application(private var left: Node, private var right: Node) : Node {
             var copy = (left as Lambda).createCopy()
             copy.setParent(this)
             left = copy
+            left.addParentCount()
+
+
+//            var lam = left as Lambda
+//            var newWr = NodeWrapper(lam.left)
+//            lam.left = newWr
+//            newWr.node.setParent(newWr)
+//            lam.right.normalizeLambdaLink(newWr)
+
             left.normalizeLinks(mutableMapOf())
             left.renameLambdaVariables()//delete
             return this
@@ -68,11 +141,20 @@ class Application(private var left: Node, private var right: Node) : Node {
                 var copy = (left as NodeWrapper).node.createCopy()
                 copy.setParent(this)
                 left = copy
+                left.addParentCount()
+
+
+//                var lam = left as Lambda
+//                var newWr = NodeWrapper(lam.left)
+//                lam.left = newWr
+//                newWr.node.setParent(newWr)
+//                lam.right.normalizeLambdaLink(newWr)
+
+
                 left.normalizeLinks(mutableMapOf())
                 left.renameLambdaVariables()//delete
                 return this
             }
-
 
 
 //            if ((left as NodeWrapper).node is Lambda) {
@@ -99,12 +181,16 @@ class Application(private var left: Node, private var right: Node) : Node {
         return Application(l, r)
     }
 
-    override fun openWrapper(listNode: MutableSet<NodeWrapper>) : Node {
+    override fun setValueParentCount(value: Int) {
+        parentCount = value
+    }
+
+    override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
 //        if (!listNode.contains(left) && left is NodeWrapper) {
-            while (!listNode.contains(left as NodeWrapper) && left is NodeWrapper) {
+        while (!listNode.contains(left as NodeWrapper) && left is NodeWrapper) {
 //        if (!listNode.contains(left) && left is NodeWrapper) {
-                left = left.leftChild()!!
-            }
+            left = left.leftChild()!!
+        }
 
 //        }
 
@@ -125,21 +211,28 @@ class Application(private var left: Node, private var right: Node) : Node {
 
 //        left.openWrapper(listNode)
 //        right.openWrapper(listNode)
-        return Application(left.openWrapper(listNode),right.openWrapper(listNode))
+        return Application(left.openWrapper(listNode), right.openWrapper(listNode))
     }
 
+    override fun getValueParentCount() = parentCount
+
+
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
+
         if (left is Variable) {
             val leftVar = left as Variable
             listNode[leftVar.printNode()].let {
                 if (it == null) return@let
                 if (leftVar.printNode() == it.leftChild().printNode()) {
                     left = it
+                    left.addParentCount()
+
                 }
             }
         } else {
             left.setParent(this)
             left.normalizeLinks(listNode)
+            left.addParentCount()
         }
 
 
@@ -149,11 +242,13 @@ class Application(private var left: Node, private var right: Node) : Node {
                 if (it == null) return@let
                 if (rightVar.printNode() == it.leftChild().printNode()) {
                     right = it
+                    right.addParentCount()
                 }
             }
         } else {
             right.normalizeLinks(listNode)
             right.setParent(this)
+            right.addParentCount()
         }
 //        left.setParent(this)
 //        right.setParent(this)
@@ -198,20 +293,26 @@ class Application(private var left: Node, private var right: Node) : Node {
 //        leftLambda.normalizeLinks(mutableMapOf()) //!!!!!!!!!!!!!!!!!!!!
         val lambdaArgWrapper = (leftLambda.leftChild() as NodeWrapper)
 
+//        lambdaArgWrapper.subParentCount()
+//        lambdaArgWrapper.node.subParentCount()
 //        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
 
 
         if (right is NodeWrapper && ((right as NodeWrapper).node is NodeWrapper)) {
-            var r1 =(right as NodeWrapper)
-            var r2 =((right as NodeWrapper).node as NodeWrapper)
-//            r2.setParent(this)
-//            right = r2
+            var r1 = (right as NodeWrapper)
+            var r2 = ((right as NodeWrapper).node as NodeWrapper)
 
-            r2.node.setParent(r1)
-            r1.node = r2.node
+//on
+            r2.setParent(this)
+            right = r2
+
+//without different
+//            r2.node.setParent(r1)
+//            r1.node = r2.node
 
             (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
             lambdaArgWrapper.node = (right as NodeWrapper).node
+
 //
         } else {
             right.setParent(lambdaArgWrapper)
@@ -311,6 +412,6 @@ class Application(private var left: Node, private var right: Node) : Node {
 //        left.setParent(this)
 //        right.setParent(this)
 
-        return Application(left.oldCreateCopy(listNode),right.oldCreateCopy(listNode))
+        return Application(left.oldCreateCopy(listNode), right.oldCreateCopy(listNode))
     }
 }
