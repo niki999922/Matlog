@@ -78,8 +78,8 @@ fun main() {
 //    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
 
 
-//    val was = "(\\x.x x)(\\x.x x)"
-    val was = "(\\x. x x x x)((\\x.  x)(\\x.  x))"
+    val was = "(\\x.x x)(\\x.x x)"
+//    val was = "(\\x. x x x x)((\\x.  x)(\\x.  x))"
 
 
 //Infinity loop

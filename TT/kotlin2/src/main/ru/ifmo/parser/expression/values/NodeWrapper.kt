@@ -28,6 +28,10 @@ data class NodeWrapper(var node: Node) : Node {
 
 
     override fun getBReduction(): Node? {
+        while (node is NodeWrapper) {
+            (node as NodeWrapper).node.setParent(this)
+            node = (node as NodeWrapper).node
+        }
         return node.getBReduction()
     }
 
