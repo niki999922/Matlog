@@ -49,7 +49,7 @@ class Lambda(var left: Node, var right: Node): Node {
         var r = right.createCopy()
         l.setParent(this)
         r.setParent(this)
-        return Lambda(l,r)
+        return Lambda(l, r)
     }
     override fun addParentCount() {
         ++parentCount
@@ -76,6 +76,20 @@ class Lambda(var left: Node, var right: Node): Node {
         return res
     }
     override fun getValueParentCount() = parentCount
+
+
+    override fun deleteNaxerWrappers() {
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
+        while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
+            (left as NodeWrapper).node.setParent(this)
+            left = (left as NodeWrapper).node
+        }
+        right.deleteNaxerWrappers()
+        left.deleteNaxerWrappers()
+    }
 
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {

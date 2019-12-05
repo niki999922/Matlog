@@ -66,6 +66,10 @@ data class NodeWrapper(var node: Node) : Node {
     }
     override fun getValueParentCount() = parentCount
 
+    override fun deleteNaxerWrappers() {
+        node.deleteNaxerWrappers()
+    }
+
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
         node.normalizeLinks(listNode)
         node.addParentCount()

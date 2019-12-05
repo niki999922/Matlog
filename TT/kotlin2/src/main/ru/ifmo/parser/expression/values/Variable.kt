@@ -48,6 +48,8 @@ data class Variable(var node: String) : Node {
 
     override fun getValueParentCount() = parentCount
 
+    override fun deleteNaxerWrappers() {}
+
 
     override fun renameLambdaVariables() {}
 

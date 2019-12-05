@@ -21,7 +21,7 @@ interface Node {
     fun setValueParentCount(value: Int)
     fun getValueParentCount():Int
 
-
+    fun deleteNaxerWrappers()
 
     fun renameLambdaVariables()
 

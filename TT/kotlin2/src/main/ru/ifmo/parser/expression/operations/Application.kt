@@ -241,6 +241,54 @@ class Application(var left: Node, var right: Node) : Node {
 
     override fun getValueParentCount() = parentCount
 
+    override fun deleteNaxerWrappers() {
+        while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
+            (left as NodeWrapper).node.setParent(this)
+            left = (left as NodeWrapper).node
+        }
+
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
+            (right as NodeWrapper).node.setParent(this)
+            right = (right as NodeWrapper).node
+        }
+
+
+        if (right is Application) {
+            var r = right as Application
+            if (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
+                r.left = left
+            }
+        }
+
+
+        if (right is Application) {
+            var r = right as Application
+            if (r.right is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.right as NodeWrapper).node)) {
+                r.right = left
+            }
+        }
+
+
+        if (left is Application) {
+            var l = left as Application
+            if (l.left is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.left as NodeWrapper).node)) {
+                l.left = right
+            }
+        }
+
+
+        if (left is Application) {
+            var l = left as Application
+            if (l.right is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.right as NodeWrapper).node)) {
+                l.right = right
+            }
+        }
+
+
+        left.deleteNaxerWrappers()
+        right.deleteNaxerWrappers()
+    }
+
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
 
@@ -324,7 +372,7 @@ class Application(var left: Node, var right: Node) : Node {
 
 
         if (right is NodeWrapper && ((right as NodeWrapper).node is NodeWrapper)) {
-            var r1 = (right as NodeWrapper)
+//            var r1 = (right as NodeWrapper)
             var r2 = ((right as NodeWrapper).node as NodeWrapper)
 
 //on
@@ -377,6 +425,7 @@ class Application(var left: Node, var right: Node) : Node {
                 leftLambda.rightChild().setParent(prevPar)
 //                leftLambda.rightChild().setParent(parentNode as NodeWrapper)
 //                (parentNode as NodeWrapper).node = leftLambda.rightChild()
+                leftLambda.right.deleteNaxerWrappers()
                 return
             }
             if (parentNode is Application) {
@@ -386,17 +435,21 @@ class Application(var left: Node, var right: Node) : Node {
                 var prevApl = parentNode as Application
                 if ((parentNode as Application).leftChild() === this) {
                     (parentNode as Application).left = leftLambda.rightChild()
+                    (parentNode as Application).left.deleteNaxerWrappers()
                 } else {
                     (parentNode as Application).right = leftLambda.rightChild()
+                    (parentNode as Application).right.deleteNaxerWrappers()
                 }
 //                (parentNode as Application).left = leftLambda.rightChild()
                 leftLambda.rightChild().setParent(prevApl)
+
                 return
             }
             if (parentNode is Lambda) {
                 var prevLam = parentNode as Lambda
                 (parentNode as Lambda).right = leftLambda.rightChild()
                 leftLambda.rightChild().setParent(prevLam)
+                leftLambda.rightChild().deleteNaxerWrappers()
                 return
             }
 
