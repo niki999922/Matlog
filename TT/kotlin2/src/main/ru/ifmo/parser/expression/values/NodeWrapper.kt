@@ -27,10 +27,12 @@ data class NodeWrapper(var node: Node) : Node {
     }
 
 
-    override fun getBReduction(): Node? = node.getBReduction()
+    override fun getBReduction(): Node? {
+        return node.getBReduction()
+    }
 
     override fun createCopy(): Node {
-        var copy =  node.createCopy()
+        var copy = node.createCopy()
         copy.setParent(this)
         return copy
     }
@@ -44,6 +46,10 @@ data class NodeWrapper(var node: Node) : Node {
         node.normalizeLinks(listNode)
 //        Painter.draw(A.treeMy!!) //debug
 //        Painter.draw(this) //debug
+    }
+
+    override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {
+        node.normalizeLambdaLink(lambdaArgument)
     }
 
     override fun renameLambdaVariables() = node.renameLambdaVariables()

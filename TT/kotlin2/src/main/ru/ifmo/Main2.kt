@@ -75,7 +75,11 @@ fun main() {
 //    val was = "(\\p.p p) (\\u.\\m.(u (\\u.m)) u)"
 //    val was = "(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))"
 //    val was = "(\\x.(x a) (x b)) (\\y.(\\z.z) a)"
-    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
+//    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
+
+
+//    val was = "(\\x.x x)(\\x.x x)"
+    val was = "(\\x. x x x x)((\\x.  x)(\\x.  x))"
 
 
 //Infinity loop

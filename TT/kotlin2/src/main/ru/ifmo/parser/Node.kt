@@ -14,6 +14,7 @@ interface Node {
     fun createCopy() : Node
     fun getBReduction(): Node?
     fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>)
+    fun normalizeLambdaLink(lambdaArgument: NodeWrapper)
 
 
     fun renameLambdaVariables()

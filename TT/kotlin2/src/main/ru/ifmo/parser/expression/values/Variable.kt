@@ -30,6 +30,7 @@ data class Variable(var node: String) : Node {
     override fun openWrapper(listNode: MutableSet<NodeWrapper>):Node = this
 
     override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {}
+    override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {}
 
     override fun renameLambdaVariables() {}
 

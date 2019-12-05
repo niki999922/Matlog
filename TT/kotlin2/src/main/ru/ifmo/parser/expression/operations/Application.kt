@@ -56,9 +56,9 @@ class Application(private var left: Node, private var right: Node) : Node {
             left = copy
             left.normalizeLinks(mutableMapOf())
             left.renameLambdaVariables()//delete
-
             return this
         }
+
         if (left is NodeWrapper) {
             var l = left as NodeWrapper
             while (l.node is NodeWrapper) {
@@ -138,6 +138,7 @@ class Application(private var left: Node, private var right: Node) : Node {
                 }
             }
         } else {
+            left.setParent(this)
             left.normalizeLinks(listNode)
         }
 
@@ -152,11 +153,34 @@ class Application(private var left: Node, private var right: Node) : Node {
             }
         } else {
             right.normalizeLinks(listNode)
+            right.setParent(this)
         }
-        left.setParent(this)
-        right.setParent(this)
+//        left.setParent(this)
+//        right.setParent(this)
+
 //        Painter.draw(A.treeMy!!) //debug
 //        Painter.draw(this) //debug
+    }
+
+    override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {
+        if (left is Variable) {
+            if (left.printNode() == lambdaArgument.printNode()) {
+                left = lambdaArgument
+            }
+        } else {
+            left.normalizeLambdaLink(lambdaArgument)
+            left.setParent(this)
+        }
+
+
+        if (right is Variable) {
+            if (right.printNode() == lambdaArgument.printNode()) {
+                right = lambdaArgument
+            }
+        } else {
+            right.normalizeLambdaLink(lambdaArgument)
+            right.setParent(this)
+        }
     }
 
     override fun renameLambdaVariables() {
@@ -177,9 +201,17 @@ class Application(private var left: Node, private var right: Node) : Node {
 //        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
 
 
-//        if (right is NodeWrapper) {
+//        if (right is NodeWrapper && ((right as NodeWrapper).node is NodeWrapper)) {
+//            var r1 =(right as NodeWrapper)
+//            var r2 =((right as NodeWrapper).node as NodeWrapper)
+//            r2.setParent(this)
+//            right = r2
+//            r2.node.setParent(r1)
+//            r1.node = r2.node
+//
 //            (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
 //            lambdaArgWrapper.node = (right as NodeWrapper).node
+
 //        } else {
             right.setParent(lambdaArgWrapper)
             lambdaArgWrapper.node = right

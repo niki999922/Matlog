@@ -55,16 +55,14 @@ class Test {
 
         fun `other ok tests`() {
             val list = mutableListOf<String>()
-//            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
-//            list.add("(\\f.\\x.f) (x) a")
-//            list.add("(\\x.x x x) (\\y.(\\z.z) a y)")
-//            list.add("a a \\k.\\m.\\a.\\o.a \\o.b m \\o.\\p.\\i.a l \\a.m l z \\t.t \\u.\\a.\\k.y t t \\n.y")
-//            list.add("(\\x.(\\a.(a e) a) x) (\\y.(\\z.y) a)")
-//            list.add("(\\x.(\\x.x) x) a")
-
-
-//            list.add("(\\c.((\\q.c) a) c) ((\\b.b) u)")
-//            list.add("(\\b.(\\i.b) s b) ((\\l.l) p)")
+            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
+            list.add("(\\f.\\x.f) (x) a")
+            list.add("(\\x.x x x) (\\y.(\\z.z) a y)")
+            list.add("a a \\k.\\m.\\a.\\o.a \\o.b m \\o.\\p.\\i.a l \\a.m l z \\t.t \\u.\\a.\\k.y t t \\n.y")
+            list.add("(\\x.(\\a.(a e) a) x) (\\y.(\\z.y) a)")
+            list.add("(\\x.(\\x.x) x) a")
+            list.add("(\\c.((\\q.c) a) c) ((\\b.b) u)")
+            list.add("(\\b.(\\i.b) s b) ((\\l.l) p)")
 
             list.add("(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)") //!!!!!!!!!!!!
 

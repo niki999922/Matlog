@@ -1,12 +1,20 @@
 digraph Lambda {
 443308702 [label="NodeWrapper  1"];
-443308702 -> {693632176};
-693632176 [label="Application  21"];
-693632176 -> {721748895};
-693632176 -> {1364335809};
-721748895 [label="Variable y 43", color=red];
-1364335809 [label="NodeWrapper  30"];
-1364335809 -> {1313953385};
-1313953385 [label="Variable y 47", color=red];
+443308702 -> {553264065};
+553264065 [label="NodeWrapper  30"];
+553264065 -> {1586270964};
+1586270964 [label="NodeWrapper  19"];
+1586270964 -> {693632176};
+693632176 [label="NodeWrapper  21"];
+693632176 -> {1349277854};
+1349277854 [label="Lambda  13"];
+1349277854 -> {2040495657};
+1349277854 -> {2040495657};
+2040495657 [label="NodeWrapper  14"];
+2040495657 -> {1267032364};
+1267032364 [label="Variable vtyh562 15", color=red];
+2040495657 [label="NodeWrapper  14"];
+2040495657 -> {1267032364};
+1267032364 [label="Variable vtyh562 15", color=red];
 
 }

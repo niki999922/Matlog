@@ -82,6 +82,22 @@ class Lambda(var left: Node, var right: Node): Node {
         }
     }
 
+    override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {
+        if ((left as Variable).printNode() == lambdaArgument.node.printNode()) {
+            return
+        }
+        right.normalizeLambdaLink(lambdaArgument)
+
+        if (right is Variable) {
+            if (right.printNode() == lambdaArgument.printNode()) {
+                right = lambdaArgument
+            }
+        } else {
+            right.setParent(this)
+            right.normalizeLambdaLink(lambdaArgument)
+        }
+    }
+
     override fun renameLambdaVariables() {
         ((left as NodeWrapper).node as Variable).node = "vtyh56${Node.indexVariable}"
         ++Node.indexVariable
