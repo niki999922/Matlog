@@ -1,7 +1,5 @@
 package ru.ifmo.parser.expression.operations
 
-import ru.ifmo.A
-import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
@@ -79,8 +77,8 @@ class Application(var left: Node, var right: Node) : Node {
         if (right is Application) {
             var r = right as Application
             if (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
-                    r.left = left
-                }
+                r.left = left
+            }
         }
 
 
@@ -152,8 +150,9 @@ class Application(var left: Node, var right: Node) : Node {
 //            newWr.node.setParent(newWr)
 //            lam.right.normalizeLambdaLink(newWr)
 
-            left.normalizeLinks(mutableMapOf())
-            left.renameLambdaVariables()//delete
+//            left.normalizeLinks(mutableMapOf())
+//            left.renameLambdaVariables()//delete
+            left.normalizeNamesLambda(mutableMapOf())
             return this
         }
 
@@ -176,8 +175,9 @@ class Application(var left: Node, var right: Node) : Node {
 //                lam.right.normalizeLambdaLink(newWr)
 
 
-                left.normalizeLinks(mutableMapOf())
-                left.renameLambdaVariables()//delete
+//                left.normalizeLinks(mutableMapOf())
+//                left.renameLambdaVariables()//delete
+                left.normalizeNamesLambda(mutableMapOf())
                 return this
             }
 
@@ -356,6 +356,59 @@ class Application(var left: Node, var right: Node) : Node {
         right.renameLambdaVariables()
     }
 
+    override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
+        if (left is Variable) {
+            val leftVar = left as Variable
+            listName[leftVar.node].let {
+                if (it == null) return@let
+                leftVar.node = it
+                leftVar.addParentCount()
+                leftVar.setParent(this)
+            }
+        } else {
+            left.normalizeNamesLambda(listName)
+            left.setParent(this)
+            left.addParentCount()
+        }
+
+
+        if (right is Variable) {
+            val rightVar = right as Variable
+            listName[rightVar.node].let {
+                if (it == null) return@let
+                rightVar.node = it
+                rightVar.addParentCount()
+                rightVar.setParent(this)
+            }
+        } else {
+            right.normalizeNamesLambda(listName)
+            right.setParent(this)
+            right.addParentCount()
+        }
+    }
+
+    override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {
+        if (left is Variable) {
+            val leftVar = left as Variable
+            if (leftVar.node == name) {
+                left = nodeWrapper
+                left.addParentCount()
+            }
+        } else {
+            left.setWrapperInVariable(name, nodeWrapper)
+        }
+
+        if (right is Variable) {
+            val rightVar = right as Variable
+            if (rightVar.node == name) {
+                this.right = nodeWrapper
+                right.addParentCount()
+            }
+        } else {
+            right.setWrapperInVariable(name, nodeWrapper)
+        }
+    }
+
     override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
         left.newRenameLambdaVariables(listNode)
         right.newRenameLambdaVariables(listNode)
@@ -364,34 +417,50 @@ class Application(var left: Node, var right: Node) : Node {
     override fun bReduction() {
         val leftLambda = left as Lambda
 //        leftLambda.normalizeLinks(mutableMapOf()) //!!!!!!!!!!!!!!!!!!!!
-        val lambdaArgWrapper = (leftLambda.leftChild() as NodeWrapper)
+//        val lambdaArg = (leftLambda.leftChild() as NodeWrapper)
+        val lambdaArg = (leftLambda.leftChild() as Variable)
 
 //        lambdaArgWrapper.subParentCount()
 //        lambdaArgWrapper.node.subParentCount()
 //        leftLambda.right = leftLambda.right.openWrapper(mutableSetOf(lambdaArgWrapper))
 
 
-        if (right is NodeWrapper && ((right as NodeWrapper).node is NodeWrapper)) {
+//        if (right is NodeWrapper && ((right as NodeWrapper).node is NodeWrapper)) {
+        //NEVER HERE
 //            var r1 = (right as NodeWrapper)
-            var r2 = ((right as NodeWrapper).node as NodeWrapper)
+//            var r2 = ((right as NodeWrapper).node as NodeWrapper)
 
 //on
-            r2.setParent(this)
-            right = r2
+//            r2.setParent(this)
+//            right = r2
 
 //without different
 //            r2.node.setParent(r1)
 //            r1.node = r2.node
 
-            (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
-            lambdaArgWrapper.node = (right as NodeWrapper).node
+//            (right as NodeWrapper).node.setParent(lambdaArgWrapper) //????
+//            lambdaArgWrapper.node = (right as NodeWrapper).node
 
 //
-        } else {
-            right.setParent(lambdaArgWrapper)
-            lambdaArgWrapper.node = right
-        }
+//        } else {
+//            right.setParent(lambdaArg)
+//            lambdaArg.node = right
+//        }
 
+
+        val newWrapper = NodeWrapper(right)
+        right.setParent(newWrapper)
+        if (leftLambda.right is Variable) {
+            val rightVar = leftLambda.right as Variable
+            if (rightVar.node == lambdaArg.node) {
+                leftLambda.right = newWrapper
+                leftLambda.right.addParentCount()
+//                leftLambda.right.setParent(leftLambda)
+            }
+        } else {
+            leftLambda.right.setWrapperInVariable(lambdaArg.node, newWrapper)
+        }
+//        leftLambda.right.setParent(leftLambda)
 
         if (parentNode != null) {
             if (parentNode is NodeWrapper) {

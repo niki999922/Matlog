@@ -108,19 +108,22 @@ fun main() {
 
 //    val was = "(\\x. x x x)(\\x. x x x)\n"
 //    val was = "(\\x.x x x x) ((\\x.x)(\\x.x))"
+    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
 //    val was = "(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)"
 
-    val was = "(\\x. x (x x) x)(\\x. x x x)\n"
+//    val was = "(\\x. x (x x) x)(\\x. x x x)\n"
+//    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))"
 
     var tree = parser.parse(was)
     tree = NodeWrapper(tree)
     A.treeMy = tree
 //    Painter.draw(tree)
-    tree.normalizeLinks(mutableMapOf())
+//    tree.normalizeLinks(mutableMapOf())
     normalizeRoot(tree)
     A.treeMy = tree
 
-    tree.renameLambdaVariables()
+//    tree.renameLambdaVariables()
+
 //    Node.indexVariable = 0
 
 
@@ -135,6 +138,8 @@ fun main() {
     println("Starting do B reduction steps:")
     println("tree ${Painter.ind}  : ${tree.printNode()}")
     Painter.draw(tree)
+    tree.normalizeNamesLambda(mutableMapOf())
+
     var redux = tree.getBReduction()
     while (redux != null) {
         Thread.sleep(100)

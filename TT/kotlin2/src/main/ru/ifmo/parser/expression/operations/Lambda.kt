@@ -1,26 +1,25 @@
 package ru.ifmo.parser.expression.operations
 
-import ru.ifmo.A
-import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
 
-class Lambda(var left: Node, var right: Node): Node {
+class Lambda(var left: Node, var right: Node) : Node {
     var parentNode: Node? = null
     var parentCount = 0
     var debug_i = lazy {
         ++Node.debug_ind
     }
+
     override fun debugInd() = debug_i.value
 
-    override fun node()= "Lambda"
+    override fun node() = "Lambda"
 
     override fun leftChild() = left
 
     override fun rightChild() = right
 
-    override fun parent(): Node?  = parentNode
+    override fun parent(): Node? = parentNode
 
     override fun setParent(node: Node) {
         parentNode = node
@@ -51,6 +50,7 @@ class Lambda(var left: Node, var right: Node): Node {
         r.setParent(this)
         return Lambda(l, r)
     }
+
     override fun addParentCount() {
         ++parentCount
     }
@@ -58,13 +58,14 @@ class Lambda(var left: Node, var right: Node): Node {
     override fun subParentCount() {
         --parentCount
     }
+
     override fun setValueParentCount(value: Int) {
         parentCount = value
     }
 
 
     override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
-        if (right === left) return Lambda(left,right)
+        if (right === left) return Lambda(left, right)
         while (!listNode.contains(right) && right is NodeWrapper) {
 //        if (!listNode.contains(right) && right is NodeWrapper) {
             right = right.leftChild()!!
@@ -75,6 +76,7 @@ class Lambda(var left: Node, var right: Node): Node {
         listNode.remove(left as NodeWrapper)
         return res
     }
+
     override fun getValueParentCount() = parentCount
 
 
@@ -154,10 +156,56 @@ class Lambda(var left: Node, var right: Node): Node {
 //        right.renameLambdaVariables()
 
 
-
         ((left as NodeWrapper).node as Variable).node = "vtyh56${Node.indexVariable}"
         ++Node.indexVariable
         right.renameLambdaVariables()
+    }
+
+    override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
+        val leftVariable = left as Variable
+        leftVariable.addParentCount()
+        val oldVariableWrapper = listName[leftVariable.node]
+
+        val newName = "vtyh56${Node.indexVariable}"
+        ++Node.indexVariable
+        val oldName = leftVariable.node
+
+        leftVariable.node = newName
+
+        listName[oldName] = newName
+
+        if (right is Variable) {
+            val rightVar = right as Variable
+            listName[rightVar.node].let {
+                if (it == null) return@let
+                rightVar.node = it
+                rightVar.addParentCount()
+                rightVar.setParent(this)
+            }
+        } else {
+            right.normalizeNamesLambda(listName)
+            right.setParent(this)
+            right.addParentCount()
+        }
+
+        if (oldVariableWrapper != null) {
+            listName[oldName] = oldVariableWrapper
+        } else {
+            listName.remove(oldName)
+        }
+    }
+
+    override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {
+        if ((left as Variable).node == name) return
+        if (right is Variable) {
+            val rightVar = right as Variable
+            if (rightVar.node == name) {
+                right = nodeWrapper
+                right.addParentCount()
+            }
+        } else {
+            right.setWrapperInVariable(name,nodeWrapper)
+        }
     }
 
     override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {

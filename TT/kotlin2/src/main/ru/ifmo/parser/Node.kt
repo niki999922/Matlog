@@ -25,6 +25,9 @@ interface Node {
 
     fun renameLambdaVariables()
 
+    fun normalizeNamesLambda(listName: MutableMap<String, String>)
+    fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper)
+
     /**
      * depricated
      */

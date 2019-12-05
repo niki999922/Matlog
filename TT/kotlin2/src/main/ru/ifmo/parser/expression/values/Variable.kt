@@ -53,6 +53,12 @@ data class Variable(var node: String) : Node {
 
     override fun renameLambdaVariables() {}
 
+    override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
+        node = listName[node] ?: node
+    }
+
+    override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {}
+
     override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
         if (listNode.contains(node)) {
             node = listNode[node].toString()

@@ -9,10 +9,15 @@ import java.io.PrintStream
 
 
 fun main() {
-    Test.`my ok tests`()
-    Test.`my fail tests`()
-    Test.`other ok tests`()
-    Test.`other loop tests`()
+    val file_res = File("file_res.txt")
+    file_res.delete()
+    file_res.createNewFile()
+
+
+//    Test.`my ok tests`()
+//    Test.`my fail tests`()
+//    Test.`other ok tests`()
+//    Test.`other loop tests`()
     Test.`other StackOverflow tests`()
     Test.`Stas tests`()
 }
@@ -23,24 +28,30 @@ class Test {
 
         fun `my ok tests`() {
             val list = mutableListOf<String>()
-            list.add("(\\a.a) d")
-            list.add("\\a.\\b.a b")
-            list.add("\\a.(\\b.(\\a.a)) a")
-            list.add("(\\a.(\\b.\\a.a b) a) (e d)")
-            list.add("((\\a.(\\x.a) c) x)")
-            list.add("(\\a.(\\b.\\a.a b) a) e")
-            list.add("(\\x.x x) ((\\x.x) (\\x.x))")
-            list.add("(\\x.x x x x) ((\\x.x) (\\x.x))")
-            list.add("(\\f.\\x.f (f (f x))) (\\f.\\x.f (f (f x)))")
-            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x))")
-            list.add("(\\a.\\b.a)(\\a.\\b.a)(\\a.\\b.b)")
-            list.add("((a\\bbb.c)d)e f g")
-            list.add("(\\f.f f f) (\\x.x)")
-            list.add("(\\x.(\\a. a a) x x x) ((\\a.a) b)")
-            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
-            list.add("(\\f.\\x.f) (x) a")
-            list.add("a ((\\a.a b) e)")
-            list.add("a b ((\\a.\\b.a b) e)")
+//            list.add("(\\a.a) d")
+//            list.add("\\a.\\b.a b")
+//            list.add("\\a.(\\b.(\\a.a)) a")
+//            list.add("(\\a.(\\b.\\a.a b) a) (e d)")
+//            list.add("((\\a.(\\x.a) c) x)")
+//            list.add("(\\a.(\\b.\\a.a b) a) e")
+//            list.add("(\\x.x x) ((\\x.x) (\\x.x))")
+
+//            list.add("(\\x.x x x x) ((\\x.x) (\\x.x))")
+//            list.add("(\\f.\\x.f (f (f x))) (\\f.\\x.f (f (f x)))")
+//            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x))")
+//            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) x") //Y комб
+//            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))") //Y комб Y
+//            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x)) (\\x.x x)")
+//            list.add("(\\a.\\b.a)(\\a.\\b.a)(\\a.\\b.b)")
+
+
+//            list.add("((a\\bbb.c)d)e f g")
+//            list.add("(\\f.f f f) (\\x.x)")
+//            list.add("(\\x.(\\a. a a) x x x) ((\\a.a) b)")
+//            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
+//            list.add("(\\f.\\x.f) (x) a")
+//            list.add("a ((\\a.a b) e)")
+//            list.add("a b ((\\a.\\b.a b) e)")
 //            runTestsList(list)
             compareOther(list)
         }
@@ -55,26 +66,26 @@ class Test {
 
         fun `other ok tests`() {
             val list = mutableListOf<String>()
-            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
-            list.add("(\\f.\\x.f) (x) a")
-            list.add("(\\x.x x x) (\\y.(\\z.z) a y)")
-            list.add("a a \\k.\\m.\\a.\\o.a \\o.b m \\o.\\p.\\i.a l \\a.m l z \\t.t \\u.\\a.\\k.y t t \\n.y")
-            list.add("(\\x.(\\a.(a e) a) x) (\\y.(\\z.y) a)")
-            list.add("(\\x.(\\x.x) x) a")
-            list.add("(\\c.((\\q.c) a) c) ((\\b.b) u)")
-            list.add("(\\b.(\\i.b) s b) ((\\l.l) p)")
+//            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
+//            list.add("(\\f.\\x.f) (x) a")
+//            list.add("(\\x.x x x) (\\y.(\\z.z) a y)")
+//            list.add("a a \\k.\\m.\\a.\\o.a \\o.b m \\o.\\p.\\i.a l \\a.m l z \\t.t \\u.\\a.\\k.y t t \\n.y")
+//            list.add("(\\x.(\\a.(a e) a) x) (\\y.(\\z.y) a)")
+//            list.add("(\\x.(\\x.x) x) a")
+//            list.add("(\\c.((\\q.c) a) c) ((\\b.b) u)")
+//            list.add("(\\b.(\\i.b) s b) ((\\l.l) p)")
 
             list.add("(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)") //!!!!!!!!!!!!
 
-            list.add("(\\n.(\\v.n) r n n) ((\\q.y) a)")
-            list.add("(\\d.d z d d) (\\x.(\\r.x) x)")
-            list.add("(\\w.w w ((\\b.\\b.w) c) w) (\\f.(\\c.f) f v)")
-            list.add("(\\v.(\\c.p (\\p.v)) v v) ((\\a.z) u)")
-            list.add("(\\a.a a) (\\n.w (\\n.(\\t.h) p) n)")
-            list.add("(\\a.a a) (\\n.n (\\v.y))")
-            list.add("\\a.(\\a.\\f.a (\\s.a)) (\\n.\\y.\\v.y (\\v.\\u.u w (\\v.\\n.(\\t.h) (\\y.x)) n))")
-            list.add("(\\p.p p) (\\u.\\m.(u (\\u.m)) u)")
-            list.add("(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))")
+//            list.add("(\\n.(\\v.n) r n n) ((\\q.y) a)")
+//            list.add("(\\d.d z d d) (\\x.(\\r.x) x)")
+//            list.add("(\\w.w w ((\\b.\\b.w) c) w) (\\f.(\\c.f) f v)")
+//            list.add("(\\v.(\\c.p (\\p.v)) v v) ((\\a.z) u)")
+//            list.add("(\\a.a a) (\\n.w (\\n.(\\t.h) p) n)")
+//            list.add("(\\a.a a) (\\n.n (\\v.y))")
+//            list.add("\\a.(\\a.\\f.a (\\s.a)) (\\n.\\y.\\v.y (\\v.\\u.u w (\\v.\\n.(\\t.h) (\\y.x)) n))")
+//            list.add("(\\p.p p) (\\u.\\m.(u (\\u.m)) u)")
+//            list.add("(\\g.(((g (\\w.(\\j.g)))) ((\\h.(g (h (v h))))))) (\\e.((e e) e))")
 //            runTestsList(list)
             compareOther(list)
 
@@ -140,19 +151,14 @@ class Test {
         }
 
         private fun compareOther(list: List<String>) {
-            val file_res = File("file_res.txt")
-            file_res.delete()
-            file_res.createNewFile()
 
             val parser = ParserLambdaExpression()
             list.forEach {
                 for (m in 1000..1000) {
                     var k = 1
-                    while (k < 100) {
+                    while (k <= 1) {
 
-//                    }
-//                    for (k in 1..m) {
-                        println("$m $k $it")
+//                        println("$m $k $it")
                         val default_out = System.out
 
                         val fileMe = File("file_me.txt")

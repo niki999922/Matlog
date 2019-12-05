@@ -83,6 +83,15 @@ data class NodeWrapper(var node: Node) : Node {
 
     override fun renameLambdaVariables() = node.renameLambdaVariables()
 
+    override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
+        node.normalizeNamesLambda(listName)
+        node.addParentCount()
+    }
+
+    override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {
+        node.setWrapperInVariable(name,nodeWrapper)
+    }
+
     override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
         node.newRenameLambdaVariables(listNode)
     }

@@ -16,10 +16,11 @@ fun main() {
     }
 
     tree = NodeWrapper(tree)
-    tree.normalizeLinks(mutableMapOf())
+//    tree.normalizeLinks(mutableMapOf())
     normalizeRoot(tree)
 
-    tree.renameLambdaVariables()
+//    tree.renameLambdaVariables()
+    tree.normalizeNamesLambda(mutableMapOf())
 //    Node.indexVariable = 0
 // (\a.(\b.(\c.(\d.d)c4 )b)a) f
 
