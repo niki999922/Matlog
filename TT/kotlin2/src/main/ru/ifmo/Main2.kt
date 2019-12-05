@@ -107,10 +107,10 @@ fun main() {
 
 
 //    val was = "(\\x. x x x)(\\x. x x x)\n"
-    val was = "(\\x.x x x x) ((\\x.x)(\\x.x))"
+//    val was = "(\\x.x x x x) ((\\x.x)(\\x.x))"
 //    val was = "(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)"
 
-//    val was = "(\\x. x x x)(\\x. x x x)\n"
+    val was = "(\\x. x x x)(\\x. x x x)\n"
 
     var tree = parser.parse(was)
     tree = NodeWrapper(tree)

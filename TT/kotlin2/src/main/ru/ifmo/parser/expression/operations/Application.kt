@@ -36,12 +36,12 @@ class Application(var left: Node, var right: Node) : Node {
     }
 
     override fun printNode(): String {
-        while (left is NodeWrapper && left.getValueParentCount() == 1) {
+        while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
             (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
 
-        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
             (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
@@ -65,23 +65,48 @@ class Application(var left: Node, var right: Node) : Node {
 
 
 //05.12
-        while (left is NodeWrapper && left.getValueParentCount() == 1) {
+        while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
             (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
 
-        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
             (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 
 //not work this 26 tl
-//        if (right is Application){
-//            var r = right as Application
-//            while (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
-//                    r.left = left
-//                }
-//        }
+        if (right is Application) {
+            var r = right as Application
+            if (r.left is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.left as NodeWrapper).node)) {
+                    r.left = left
+                }
+        }
+
+
+        if (right is Application) {
+            var r = right as Application
+            if (r.right is NodeWrapper && left is NodeWrapper && ((left as NodeWrapper).node === (r.right as NodeWrapper).node)) {
+                r.right = left
+            }
+        }
+
+
+        if (left is Application) {
+            var l = left as Application
+            if (l.left is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.left as NodeWrapper).node)) {
+                l.left = right
+            }
+        }
+
+
+        if (left is Application) {
+            var l = left as Application
+            if (l.right is NodeWrapper && right is NodeWrapper && ((right as NodeWrapper).node === (l.right as NodeWrapper).node)) {
+                l.right = right
+            }
+        }
+
 
 //not work this
 //        if (left is Application){

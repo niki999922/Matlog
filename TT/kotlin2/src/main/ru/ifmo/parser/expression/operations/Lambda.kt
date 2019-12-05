@@ -27,7 +27,7 @@ class Lambda(var left: Node, var right: Node): Node {
     }
 
     override fun printNode(): String {
-        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
             (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
@@ -36,7 +36,7 @@ class Lambda(var left: Node, var right: Node): Node {
     }
 
     override fun getBReduction(): Node? {
-        while (right is NodeWrapper && right.getValueParentCount() == 1) {
+        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
             (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
