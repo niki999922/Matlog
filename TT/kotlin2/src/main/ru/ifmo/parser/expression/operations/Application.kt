@@ -104,6 +104,14 @@ class Application(var left: Node, var right: Node) : Node {
                 left.normalizeNamesLambda(mutableMapOf())
                 return this
             }
+            left = l
+            nodeTmp.node = this
+            val resLeft = l.getBReduction(nodeTmp)
+            if (resLeft != null) {
+                return resLeft
+            }
+            nodeTmp.node = this
+            return right.getBReduction(nodeTmp)
 //            return l.getBReduction() ?: right.getBReduction()
         }
 
