@@ -1,12 +1,18 @@
 digraph Lambda {
-1066516207 [label="NodeWrapper (p: 0)  (deb: 1)"];
-1066516207 -> {693632176};
-693632176 [label="Application (p: 1)  (deb: 21)"];
-693632176 -> {1793329556};
-693632176 -> {1364335809};
-1793329556 [label="Variable (p: 0) y (deb: 39)", color=red];
-1364335809 [label="NodeWrapper (p: 3)  (deb: 29)"];
-1364335809 -> {721748895};
-721748895 [label="Variable (p: 0) y (deb: 42)", color=red];
+205797316 [label="NodeWrapper (p: 0)  (deb: 1)"];
+205797316 -> {812265671};
+812265671 [label="Lambda (p: 0)  (deb: 2)"];
+812265671 -> {193064360};
+812265671 -> {109961541};
+193064360 [label="Variable (p: 0) a (deb: 3)", color=red];
+109961541 [label="Lambda (p: 0)  (deb: 4)"];
+109961541 -> {670700378};
+109961541 -> {1190654826};
+670700378 [label="Variable (p: 0) b (deb: 5)", color=red];
+1190654826 [label="Application (p: 0)  (deb: 6)"];
+1190654826 -> {1109371569};
+1190654826 -> {728890494};
+1109371569 [label="Variable (p: 0) a (deb: 7)", color=red];
+728890494 [label="Variable (p: 0) b (deb: 8)", color=red];
 
 }

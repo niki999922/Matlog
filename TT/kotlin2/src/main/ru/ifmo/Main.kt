@@ -11,33 +11,28 @@ fun main() {
     val parser = ParserLambdaExpression()
     var tree = parser.parse(input)
     if (m == 1) {
-        println(tree.printNode())
+        print(tree.printNode())
         return
     }
 
     tree = NodeWrapper(tree)
-//    tree.normalizeLinks(mutableMapOf())
     normalizeRoot(tree)
 
-//    tree.renameLambdaVariables()
     tree.normalizeNamesLambda(mutableMapOf())
-//    Node.indexVariable = 0
-// (\a.(\b.(\c.(\d.d)c4 )b)a) f
-
     var redux = tree.getBReduction()
     var counter = 1
     var borderCounter = 1
     var flag = true
-    println(tree.printNode())
+    print(tree.printNode())
     while (redux != null) {
         redux.bReduction()
         if (counter == k) {
-            println(tree.printNode())
+            print("\n${tree.printNode()}")
             counter = 0
         }
         if (borderCounter == m) {
             if (counter != 0 ) {
-                println(tree.printNode())
+                print("\n${tree.printNode()}")
             }
             flag = false
             break
@@ -47,6 +42,6 @@ fun main() {
         ++borderCounter
     }
     if (flag && counter != 1) {
-        println(tree.printNode())
+        print("\n${tree.printNode()}")
     }
 }

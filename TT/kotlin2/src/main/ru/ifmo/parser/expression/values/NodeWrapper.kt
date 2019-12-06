@@ -1,6 +1,5 @@
 package ru.ifmo.parser.expression.values
 
-import ru.ifmo.A
 import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 
@@ -34,6 +33,7 @@ data class NodeWrapper(var node: Node) : Node {
     override fun setParent(node: Node) {
         parentNode = node
     }
+
     override fun addParentCount() {
         ++parentCount
     }
@@ -41,10 +41,10 @@ data class NodeWrapper(var node: Node) : Node {
     override fun subParentCount() {
         --parentCount
     }
+
     override fun setValueParentCount(value: Int) {
         parentCount = value
     }
-
 
     override fun getBReduction(): Node? {
         while (node is NodeWrapper && node.getValueParentCount() == parentCount) {
@@ -60,28 +60,11 @@ data class NodeWrapper(var node: Node) : Node {
         return copy
     }
 
-    override fun openWrapper(listNode: MutableSet<NodeWrapper>): Node {
-        node = node.openWrapper(listNode)
-        return this
-    }
     override fun getValueParentCount() = parentCount
 
     override fun deleteNaxerWrappers() {
         node.deleteNaxerWrappers()
     }
-
-    override fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>) {
-        node.normalizeLinks(listNode)
-        node.addParentCount()
-//        Painter.draw(A.treeMy!!) //debug
-//        Painter.draw(this) //debug
-    }
-
-    override fun normalizeLambdaLink(lambdaArgument: NodeWrapper) {
-        node.normalizeLambdaLink(lambdaArgument)
-    }
-
-    override fun renameLambdaVariables() = node.renameLambdaVariables()
 
     override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
         node.normalizeNamesLambda(listName)
@@ -92,13 +75,5 @@ data class NodeWrapper(var node: Node) : Node {
         node.setWrapperInVariable(name,nodeWrapper)
     }
 
-    override fun newRenameLambdaVariables(listNode: MutableMap<String, String>) {
-        node.newRenameLambdaVariables(listNode)
-    }
-
     override fun bReduction() {}
-
-    override fun oldCreateCopy(listNode: MutableMap<String, NodeWrapper>): Node {
-        return node.oldCreateCopy(listNode)
-    }
 }

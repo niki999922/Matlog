@@ -8,11 +8,11 @@ import ru.ifmo.parser.expression.values.NodeWrapper
 import ru.ifmo.parser.expression.values.Variable
 import kotlin.concurrent.thread
 
-class A {
-    companion object {
-        var treeMy:Node? = null
-    }
-}
+//class A {
+//    companion object {
+//        var treeMy:Node? = null
+//    }
+//}
 
 fun main() {
 //    var input = BufferedReader(InputStreamReader(System.`in`)).readLines().joinToString("\n")
@@ -22,7 +22,7 @@ fun main() {
 
 
 //    val was = "(\\a.a) d"
-//    val was = "\\a.\\b.a b"
+//    val was = "(\\a.(\\b.b) a) (a b)"
 //    val was = "\\a.(\\b.(\\a.a)) a"
 //    val was = "(\\a.(\\b.\\a.a b) a) (e d)"
 //    val was = "((\\a.(\\x.a) c) x)"
@@ -108,19 +108,25 @@ fun main() {
 
 //    val was = "(\\x. x x x)(\\x. x x x)\n"
 //    val was = "(\\x.x x x x) ((\\x.x)(\\x.x))"
-    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
+//    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
 //    val was = "(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)"
 
 //    val was = "(\\x. x (x x) x)(\\x. x x x)\n"
 //    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))"
 
+
+
+//    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) x"
+//    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
+    val was = "\\a.\\b.a b"
+
     var tree = parser.parse(was)
     tree = NodeWrapper(tree)
-    A.treeMy = tree
+//    A.treeMy = tree
 //    Painter.draw(tree)
 //    tree.normalizeLinks(mutableMapOf())
     normalizeRoot(tree)
-    A.treeMy = tree
+//    A.treeMy = tree
 
 //    tree.renameLambdaVariables()
 
@@ -135,18 +141,22 @@ fun main() {
 //    println("Redex    : ${tree.getBReduction()!!.printNode()}\n")
 
 
+    var k =1
     println("Starting do B reduction steps:")
     println("tree ${Painter.ind}  : ${tree.printNode()}")
     Painter.draw(tree)
     tree.normalizeNamesLambda(mutableMapOf())
-
     var redux = tree.getBReduction()
     while (redux != null) {
         Thread.sleep(100)
         redux.bReduction()
         redux = tree.getBReduction()
-        println("tree ${Painter.ind}  : ${tree.printNode()}")
-        Painter.draw(tree)
+//        if (k == 10) {
+            println("tree ${Painter.ind}  : ${tree.printNode()}")
+            Painter.draw(tree)
+            k = 1
+//        }
+//        ++k
     }
     println("\ntree in end: ${tree.printNode()}")
 //    println()

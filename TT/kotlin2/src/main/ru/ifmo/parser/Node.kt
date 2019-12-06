@@ -13,34 +13,14 @@ interface Node {
     fun bReduction()
     fun createCopy() : Node
     fun getBReduction(): Node?
-    fun normalizeLinks(listNode: MutableMap<String, NodeWrapper>)
-    fun normalizeLambdaLink(lambdaArgument: NodeWrapper)
-
     fun addParentCount()
     fun subParentCount()
     fun setValueParentCount(value: Int)
     fun getValueParentCount():Int
-
     fun deleteNaxerWrappers()
-
-    fun renameLambdaVariables()
-
     fun normalizeNamesLambda(listName: MutableMap<String, String>)
     fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper)
-
-    /**
-     * depricated
-     */
-    fun openWrapper(listNode: MutableSet<NodeWrapper>): Node
-    fun newRenameLambdaVariables(listNode: MutableMap<String, String>)
-    fun oldCreateCopy(listNode: MutableMap<String, NodeWrapper>) : Node
-
-
-    /**
-     * debug
-     */
-    fun debugInd(): Int
-
+    fun debugInd():Int
 
     companion object {
         var indexVariable = 0
