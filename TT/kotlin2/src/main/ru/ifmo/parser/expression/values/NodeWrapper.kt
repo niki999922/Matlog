@@ -15,7 +15,7 @@ data class NodeWrapper(var node: Node) : Node {
     override fun node() = "Variable Wrapper"
 
     override fun printNode():String {
-        while (node is NodeWrapper && node.getValueParentCount() == parentCount) {
+        while (node is NodeWrapper) {
             node = (node as NodeWrapper).node
         }
 
@@ -39,7 +39,7 @@ data class NodeWrapper(var node: Node) : Node {
     }
 
     override fun getBReduction(nodeTmp: NodeWrapper): Node? {
-        while (node is NodeWrapper && node.getValueParentCount() == parentCount) {
+        while (node is NodeWrapper) {
             node = (node as NodeWrapper).node
         }
 
