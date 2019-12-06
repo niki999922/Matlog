@@ -80,7 +80,7 @@ fun main() {
 
 //    val was = "(\\x.x x)(\\x.x x)"
 //    val was = "(\\x.x x)((\\x.x) (\\x.x))"
-//    val was = "(\\x. x x x x)((\\x.  x)(\\x.  x))"
+    val was = "(\\x. x x x x)((\\x.  x)(\\x.  x))"
 
 
 //Infinity loop
@@ -118,14 +118,13 @@ fun main() {
 
 //    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) x"
 //    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
-    val was = "\\a.\\b.a b"
+//    val was = "\\a.\\b.a b"
 
     var tree = parser.parse(was)
     tree = NodeWrapper(tree)
 //    A.treeMy = tree
 //    Painter.draw(tree)
 //    tree.normalizeLinks(mutableMapOf())
-    normalizeRoot(tree)
 //    A.treeMy = tree
 
 //    tree.renameLambdaVariables()
@@ -142,15 +141,16 @@ fun main() {
 
 
     var k =1
+    var reduxPar = NodeWrapper(Variable("my_tmp_Node1"))
     println("Starting do B reduction steps:")
     println("tree ${Painter.ind}  : ${tree.printNode()}")
     Painter.draw(tree)
     tree.normalizeNamesLambda(mutableMapOf())
-    var redux = tree.getBReduction()
+    var redux = tree.getBReduction(reduxPar)
     while (redux != null) {
         Thread.sleep(100)
-        redux.bReduction()
-        redux = tree.getBReduction()
+        redux.bReduction(reduxPar.node)
+        redux = tree.getBReduction(reduxPar)
 //        if (k == 10) {
             println("tree ${Painter.ind}  : ${tree.printNode()}")
             Painter.draw(tree)
@@ -170,20 +170,4 @@ fun main() {
 //    println("was: ((a\\bbb.c)d)e \nf g")
 //    println("expected: (((((a (\\bbb.c)) d) e) f) g)")
 //    println("get     : ${tree3.printNode()}")
-}
-
-
-fun normalizeRoot(node : Node) {
-    if (node is Application) {
-        node.left.setParent(node)
-        node.right.setParent(node)
-    }
-    if (node is Lambda) {
-        node.left.setParent(node)
-        node.right.setParent(node)
-    }
-    if (node is NodeWrapper) {
-        node.node.setParent(node)
-    }
-
 }

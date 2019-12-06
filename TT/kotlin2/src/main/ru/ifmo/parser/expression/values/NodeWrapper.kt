@@ -4,7 +4,6 @@ import ru.ifmo.Painter
 import ru.ifmo.parser.Node
 
 data class NodeWrapper(var node: Node) : Node {
-    var parentNode: Node? = null
     var parentCount = 0
 
     var debug_i = lazy {
@@ -17,7 +16,6 @@ data class NodeWrapper(var node: Node) : Node {
 
     override fun printNode():String {
         while (node is NodeWrapper && node.getValueParentCount() == parentCount) {
-            (node as NodeWrapper).node.setParent(this)
             node = (node as NodeWrapper).node
         }
 
@@ -27,12 +25,6 @@ data class NodeWrapper(var node: Node) : Node {
     override fun leftChild() = node
 
     override fun rightChild(): Node? = null
-
-    override fun parent(): Node? = parentNode
-
-    override fun setParent(node: Node) {
-        parentNode = node
-    }
 
     override fun addParentCount() {
         ++parentCount
@@ -46,17 +38,17 @@ data class NodeWrapper(var node: Node) : Node {
         parentCount = value
     }
 
-    override fun getBReduction(): Node? {
+    override fun getBReduction(nodeTmp: NodeWrapper): Node? {
         while (node is NodeWrapper && node.getValueParentCount() == parentCount) {
-            (node as NodeWrapper).node.setParent(this)
             node = (node as NodeWrapper).node
         }
-        return node.getBReduction()
+
+        nodeTmp.node = this
+        return node.getBReduction(nodeTmp)
     }
 
     override fun createCopy(): Node {
         var copy = node.createCopy()
-        copy.setParent(this)
         return copy
     }
 
@@ -75,5 +67,5 @@ data class NodeWrapper(var node: Node) : Node {
         node.setWrapperInVariable(name,nodeWrapper)
     }
 
-    override fun bReduction() {}
+    override fun bReduction(parent: Node) {}
 }

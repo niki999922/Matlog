@@ -7,12 +7,10 @@ interface Node {
     fun node(): String
     fun leftChild() : Node?
     fun rightChild() : Node?
-    fun parent(): Node?
-    fun setParent(node : Node)
     fun printNode() : String
-    fun bReduction()
+    fun bReduction(parent: Node)
     fun createCopy() : Node
-    fun getBReduction(): Node?
+    fun getBReduction(nodeTmp: NodeWrapper): Node?
     fun addParentCount()
     fun subParentCount()
     fun setValueParentCount(value: Int)

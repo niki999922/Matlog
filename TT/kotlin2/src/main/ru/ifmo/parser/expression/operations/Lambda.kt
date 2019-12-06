@@ -5,7 +5,6 @@ import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
 
 class Lambda(var left: Node, var right: Node) : Node {
-    var parentNode: Node? = null
     var parentCount = 0
     var debug_i = lazy {
         ++Node.debug_ind
@@ -19,35 +18,27 @@ class Lambda(var left: Node, var right: Node) : Node {
 
     override fun rightChild() = right
 
-    override fun parent(): Node? = parentNode
-
-    override fun setParent(node: Node) {
-        parentNode = node
-    }
 
     override fun printNode(): String {
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 
         return "(\\${left.printNode()}.${right.printNode()})"
     }
 
-    override fun getBReduction(): Node? {
+    override fun getBReduction(nodeTmp: NodeWrapper): Node? {
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 
-        return right.getBReduction()
+        nodeTmp.node = this
+        return right.getBReduction(nodeTmp)
     }
 
     override fun createCopy(): Node {
         var l = left.createCopy()
         var r = right.createCopy()
-        l.setParent(this)
-        r.setParent(this)
         return Lambda(l, r)
     }
 
@@ -67,11 +58,9 @@ class Lambda(var left: Node, var right: Node) : Node {
 
     override fun deleteNaxerWrappers() {
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
         while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
-            (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
         right.deleteNaxerWrappers()
@@ -101,7 +90,6 @@ class Lambda(var left: Node, var right: Node) : Node {
             right.normalizeNamesLambda(listName)
         }
         right.addParentCount()
-        right.setParent(this)
 
         if (oldVariableWrapper != null) {
             listName[oldName] = oldVariableWrapper
@@ -123,5 +111,5 @@ class Lambda(var left: Node, var right: Node) : Node {
         }
     }
 
-    override fun bReduction() {}
+    override fun bReduction(parent: Node) {}
 }

@@ -3,6 +3,7 @@ package ru.ifmo
 import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.ParserLambdaExpression
 import ru.ifmo.parser.expression.values.NodeWrapper
+import ru.ifmo.parser.expression.values.Variable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -147,18 +148,19 @@ class Test {
 
                 tree = NodeWrapper(tree)
 //                tree.normalizeLinks(mutableMapOf())
-                normalizeRoot(tree)
+//                normalizeRoot(tree)
                 tree.normalizeNamesLambda(mutableMapOf())
 
 
 //                tree.renameLambdaVariables()
+                var reduxPar = NodeWrapper(Variable("my_tmp_Node1"))
 
-                var redux = tree.getBReduction()
+                var redux = tree.getBReduction(reduxPar)
                 println(tree.printNode())
                 while (redux != null) {
-                    redux.bReduction()
+                    redux.bReduction(reduxPar.node)
                     println(tree.printNode())
-                    redux = tree.getBReduction()
+                    redux = tree.getBReduction(reduxPar)
                 }
                 println()
             }

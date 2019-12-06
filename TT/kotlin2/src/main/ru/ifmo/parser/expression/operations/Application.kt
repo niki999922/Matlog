@@ -5,7 +5,6 @@ import ru.ifmo.parser.expression.values.Variable
 import ru.ifmo.parser.expression.values.NodeWrapper
 
 class Application(var left: Node, var right: Node) : Node {
-    var parentNode: Node? = null
     var parentCount = 0
     var debug_i = lazy {
         ++Node.debug_ind
@@ -19,12 +18,6 @@ class Application(var left: Node, var right: Node) : Node {
 
     override fun rightChild() = right
 
-    override fun parent(): Node? = parentNode
-
-    override fun setParent(node: Node) {
-        parentNode = node
-    }
-
     override fun addParentCount() {
         ++parentCount
     }
@@ -35,26 +28,22 @@ class Application(var left: Node, var right: Node) : Node {
 
     override fun printNode(): String {
         while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
-            (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
 
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 
         return "(${left.printNode()} ${right.printNode()})"
     }
 
-    override fun getBReduction(): Node? {
+    override fun getBReduction(nodeTmp: NodeWrapper): Node? {
         while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
-            (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
 
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 
@@ -91,9 +80,9 @@ class Application(var left: Node, var right: Node) : Node {
         }
 
 
+
         if (left is Lambda) {
             var copy = left.createCopy()
-            copy.setParent(this)
             left = copy
             left.addParentCount()
             left.normalizeNamesLambda(mutableMapOf())
@@ -106,7 +95,6 @@ class Application(var left: Node, var right: Node) : Node {
             }
             if (l.node is Lambda) {
                 var copy = l.createCopy()
-                copy.setParent(this)
                 left = copy
                 left.addParentCount()
                 left.normalizeNamesLambda(mutableMapOf())
@@ -115,14 +103,18 @@ class Application(var left: Node, var right: Node) : Node {
 //            return l.getBReduction() ?: right.getBReduction()
         }
 
-        return left.getBReduction() ?: right.getBReduction()
+        nodeTmp.node = this
+        val resLeft = left.getBReduction(nodeTmp)
+        if (resLeft != null) {
+            return resLeft
+        }
+        nodeTmp.node = this
+        return right.getBReduction(nodeTmp)
     }
 
     override fun createCopy(): Node {
         var l = left.createCopy()
         var r = right.createCopy()
-        l.setParent(this)
-        r.setParent(this)
 
         return Application(l, r)
     }
@@ -135,12 +127,10 @@ class Application(var left: Node, var right: Node) : Node {
 
     override fun deleteNaxerWrappers() {
         while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
-            (left as NodeWrapper).node.setParent(this)
             left = (left as NodeWrapper).node
         }
 //
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            (right as NodeWrapper).node.setParent(this)
             right = (right as NodeWrapper).node
         }
 //
@@ -202,9 +192,7 @@ class Application(var left: Node, var right: Node) : Node {
             right.normalizeNamesLambda(listName)
         }
         left.addParentCount()
-        left.setParent(this)
         right.addParentCount()
-        right.setParent(this)
     }
 
     override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {
@@ -229,13 +217,12 @@ class Application(var left: Node, var right: Node) : Node {
         }
     }
 
-    override fun bReduction() {
+    override fun bReduction(parent: Node) {
         val leftLambda = left as Lambda
         val lambdaArg = (leftLambda.leftChild() as Variable)
 
 
         val newWrapper = NodeWrapper(right)
-        right.setParent(newWrapper)
         if (leftLambda.right is Variable) {
             val rightVar = leftLambda.right as Variable
             if (rightVar.node == lambdaArg.node) {
@@ -246,29 +233,26 @@ class Application(var left: Node, var right: Node) : Node {
             leftLambda.right.setWrapperInVariable(lambdaArg.node, newWrapper)
         }
 
-        if (parentNode is NodeWrapper) {
-            var prevPar = parentNode as NodeWrapper
-            (parentNode as NodeWrapper).node = leftLambda.right
-            leftLambda.rightChild().setParent(prevPar)
+        if (parent is NodeWrapper) {
+//            var prevPar = parent
+            parent.node = leftLambda.right
             leftLambda.right.deleteNaxerWrappers()
             return
         }
-        if (parentNode is Application) {
-            var prevApl = parentNode as Application
-            if ((parentNode as Application).leftChild() === this) {
-                (parentNode as Application).left = leftLambda.rightChild()
-                (parentNode as Application).left.deleteNaxerWrappers()
+        if (parent is Application) {
+//            var prevApl = parent
+            if (parent.leftChild() === this) {
+                parent.left = leftLambda.rightChild()
+                parent.left.deleteNaxerWrappers()
             } else {
-                (parentNode as Application).right = leftLambda.rightChild()
-                (parentNode as Application).right.deleteNaxerWrappers()
+                parent.right = leftLambda.rightChild()
+                parent.right.deleteNaxerWrappers()
             }
-            leftLambda.rightChild().setParent(prevApl)
             return
         }
-        if (parentNode is Lambda) {
-            var prevLam = parentNode as Lambda
-            (parentNode as Lambda).right = leftLambda.rightChild()
-            leftLambda.rightChild().setParent(prevLam)
+        if (parent is Lambda) {
+//            var prevLam = parent
+            parent.right = leftLambda.rightChild()
             leftLambda.rightChild().deleteNaxerWrappers()
             return
         }

@@ -1,7 +1,9 @@
 package ru.ifmo
 
+import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.ParserLambdaExpression
 import ru.ifmo.parser.expression.values.NodeWrapper
+import ru.ifmo.parser.expression.values.Variable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -16,16 +18,16 @@ fun main() {
     }
 
     tree = NodeWrapper(tree)
-    normalizeRoot(tree)
 
     tree.normalizeNamesLambda(mutableMapOf())
-    var redux = tree.getBReduction()
+    var reduxPar = NodeWrapper(Variable("my_tmp_Node1"))
+    var redux = tree.getBReduction(reduxPar)
     var counter = 1
     var borderCounter = 1
     var flag = true
     print(tree.printNode())
     while (redux != null) {
-        redux.bReduction()
+        redux.bReduction(reduxPar.node)
         if (counter == k) {
             print("\n${tree.printNode()}")
             counter = 0
@@ -37,7 +39,7 @@ fun main() {
             flag = false
             break
         }
-        redux = tree.getBReduction()
+        redux = tree.getBReduction(reduxPar)
         ++counter
         ++borderCounter
     }

@@ -3,7 +3,6 @@ package ru.ifmo.parser.expression.values
 import ru.ifmo.parser.Node
 
 data class Variable(var node: String) : Node {
-    var parentNode: Node? = null
     var parentCount = 0
 
 
@@ -21,13 +20,7 @@ data class Variable(var node: String) : Node {
 
     override fun rightChild(): Node? = null
 
-    override fun parent(): Node? = parentNode
-
-    override fun setParent(node: Node) {
-        parentNode = node
-    }
-
-    override fun getBReduction(): Node?  = null
+    override fun getBReduction(nodeTmp: NodeWrapper): Node?  = null
 
     override fun addParentCount() {
         ++parentCount
@@ -51,7 +44,7 @@ data class Variable(var node: String) : Node {
 
     override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {}
 
-    override fun bReduction() {}
+    override fun bReduction(parent: Node) {}
 
     override fun createCopy(): Node {
         return Variable(node)
