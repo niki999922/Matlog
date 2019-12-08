@@ -126,7 +126,7 @@ class Test {
 
                         ProcessBuilder("java", "-jar","/Users/nikita/Matlog/TT/kotlin2/task2.jar").redirectOutput(fileOther).redirectInput(fileOtherIn).start().waitFor()
 
-                        ProcessBuilder("/bin/sh","/Users/nikita/Matlog/compareScropt.sh").start().waitFor()
+                        ProcessBuilder("/bin/sh","/Users/nikita/Matlog/compareScript.sh").start().waitFor()
 
 //                        fileMe.delete()
 //                        fileOther.delete()

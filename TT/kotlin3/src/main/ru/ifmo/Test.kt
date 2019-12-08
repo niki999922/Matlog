@@ -1,9 +1,6 @@
 package ru.ifmo
 
-import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.ParserLambdaExpression
-import ru.ifmo.parser.expression.values.NodeWrapper
-import ru.ifmo.parser.expression.values.Variable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -11,16 +8,12 @@ import java.io.PrintStream
 
 
 fun main() {
-    val file_res = File("file_res.txt")
-    file_res.delete()
-    file_res.createNewFile()
-
     val startTime = System.currentTimeMillis()
 
-    Test.`my ok tests`()
-    Test.`other ok tests`()
-    Test.`other loop tests`()
-    Test.`other StackOverflow tests`()
+    Test.`test pack 1`()
+    Test.`test pack 2`()
+    Test.`test pack 3`()
+    Test.`test pack 4`()
 
     var timeSpent = System.currentTimeMillis() - startTime
     println("Duration: $timeSpent")
@@ -30,7 +23,7 @@ class Test {
     companion object {
         val parser = ParserLambdaExpression()
 
-        fun `my ok tests`() {
+        fun `test pack 1`() {
             val list = mutableListOf<String>()
             list.add("(\\a.a) d")
             list.add("\\a.\\b.a b")
@@ -59,7 +52,7 @@ class Test {
             compareOther(list)
         }
 
-        fun `other ok tests`() {
+        fun `test pack 2`() {
             val list = mutableListOf<String>()
             list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
             list.add("(\\f.\\x.f) (x) a")
@@ -82,7 +75,7 @@ class Test {
             compareOther(list)
         }
 
-        fun `other loop tests`() {
+        fun `test pack 3`() {
             val list = mutableListOf<String>()
             list.add("(\\x.(x a) (x b)) (\\y.(\\z.z) a)")
             list.add("(\\v.(\\p.p (\\p.v)) v) ((\\a.z) u)")
@@ -95,7 +88,7 @@ class Test {
             compareOther(list)
         }
 
-        fun `other StackOverflow tests`() {
+        fun `test pack 4`() {
             val list = mutableListOf<String>()
             list.add("(((\\n.((\\w.(n (s n))) (\\t.(t t)))) ((\\d.(((d z) (((i s) (x d)) (\\d.(n d)))) d)) (\\x.((\\w.((\\c.x) (\\g.m))) (((x (\\h.((\\h.(((t h) (\\t.(\\u.(((\\h.(\\p.(\\d.((\\q.(\\e.(\\f.x))) (((x (\\a.(\\o.p))) d) h))))) (\\g.(((\\e.((\\g.((\\i.h) e)) u)) h) ((((j h) h) (g w)) (\\r.((h u) (\\n.r))))))) (\\n.(\\f.h)))))) (\\w.x))) x))) (\\r.x)) x))))) (((\\b.(\\l.(l (((\\b.b) ((l z) (b (l ((\\z.c) (\\a.(\\a.((\\n.(((\\v.((\\c.(\\d.((a v) v))) (n b))) a) (\\t.(((\\y.(\\n.((\\h.(\\g.(\\b.y))) b))) (\\s.(a t))) (b b))))) ((\\n.n) (r (l l))))))))))) (b ((b ((\\j.(b (\\p.(b j)))) (e (\\j.((\\a.(((\\y.(\\y.(l (\\a.((j c) a))))) (\\w.u)) (\\f.b))) b))))) w)))))) b) (\\m.((\\e.(\\s.s)) m))))")
             list.add("(w ((((\\a.(\\g.g)) i) ((\\u.(e (u (\\g.((\\c.(\\n.(((u g) (\\g.(\\s.(g (x n))))) (g u)))) (((\\s.(h u)) q) (g u))))))) (\\b.(\\c.((\\n.(\\k.(((b ((\\m.k) ((\\g.(\\c.(\\p.(c (\\p.(\\f.(\\n.(\\i.(k v))))))))) (n y)))) n) (\\o.k)))) c))))) (((\\v.((x ((\\v.(\\z.(\\w.f))) ((\\q.((q v) v)) v))) (\\g.(\\i.(\\b.(\\d.((\\x.t) (\\u.(\\j.(e d)))))))))) r) t)))")
@@ -104,35 +97,41 @@ class Test {
         }
 
         private fun compareOther(list: List<String>) {
+            val fileRes = File("file_res.txt")
+            fileRes.delete()
+            fileRes.createNewFile()
             list.forEach {
-                for (m in 10000..10000) {
-                    var k = 500
-                    while (k <= 2002) {
-                        val fileOtherIn = File("file_other_in.txt")
-                        fileOtherIn.writeText("$m $k\n$it ")
+                val fileTaskIn = File("file_task_in.txt")
+                fileTaskIn.writeText("$it")
+//                println("$it")
+                val default_out = System.out
+                val default_in = System.`in`
 
-//                        println("$m $k $it")
-                        val default_out = System.out
-                        val default_in = System.`in`
-
-                        val fileMe = File("file_me.txt")
-                        System.setOut(PrintStream(FileOutputStream(fileMe)))
-                        System.setIn(FileInputStream(fileOtherIn))
+                val fileMe = File("file_me.txt")
+                System.setOut(PrintStream(FileOutputStream(fileMe)))
+                System.setIn(FileInputStream(fileTaskIn))
 //                        mainq() //rename Main.main
-                        System.setOut(default_out)
-                        System.setIn(default_in)
+                System.setOut(default_out)
+                System.setIn(default_in)
 
-                        val fileOther = File("file_other.txt")
+                val fileOther = File("file_other.txt")
 
-                        ProcessBuilder("java", "-jar","/Users/nikita/Matlog/TT/kotlin2/task3.jar").redirectOutput(fileOther).redirectInput(fileOtherIn).start().waitFor()
+                ProcessBuilder("java", "-jar", "/Users/nikita/Matlog/TT/kotlin2/task3.jar").redirectOutput(fileOther).redirectInput(fileTaskIn).start().waitFor()
 
-                        ProcessBuilder("/bin/sh","/Users/nikita/Matlog/compareScropt.sh").start().waitFor()
-
-//                        fileMe.delete()
-//                        fileOther.delete()
-                        k=k*2
+                val fileMeList =fileMe.readLines()
+                val fileOtherList =fileOther.readLines()
+                if (fileMeList.size != fileOtherList.size) {
+                    fileRes.writeText("fail size: $it;")
+                } else {
+                    for (i in 1..fileMeList.size) {
+                        if (fileMeList[i] != fileMeList[i]) {
+                            fileRes.writeText("fail equals line $i: $it;")
+                            break
+                        }
                     }
                 }
+//                        fileMe.delete()
+//                        fileOther.delete()
             }
         }
     }
