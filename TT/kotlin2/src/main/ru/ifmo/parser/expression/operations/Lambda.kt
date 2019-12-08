@@ -18,7 +18,6 @@ class Lambda(var left: Node, var right: Node) : Node {
 
     override fun rightChild() = right
 
-
     override fun printNode(): String {
         while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
             right = (right as NodeWrapper).node
@@ -46,26 +45,7 @@ class Lambda(var left: Node, var right: Node) : Node {
         ++parentCount
     }
 
-    override fun subParentCount() {
-        --parentCount
-    }
-
-    override fun setValueParentCount(value: Int) {
-        parentCount = value
-    }
-
     override fun getValueParentCount() = parentCount
-
-    override fun deleteNaxerWrappers() {
-        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            right = (right as NodeWrapper).node
-        }
-        while (left is NodeWrapper && left.getValueParentCount() == parentCount) {
-            left = (left as NodeWrapper).node
-        }
-        right.deleteNaxerWrappers()
-        left.deleteNaxerWrappers()
-    }
 
     override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
         val leftVariable = left as Variable

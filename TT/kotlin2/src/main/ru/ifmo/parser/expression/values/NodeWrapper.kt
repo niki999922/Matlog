@@ -30,14 +30,6 @@ data class NodeWrapper(var node: Node) : Node {
         ++parentCount
     }
 
-    override fun subParentCount() {
-        --parentCount
-    }
-
-    override fun setValueParentCount(value: Int) {
-        parentCount = value
-    }
-
     override fun getBReduction(nodeTmp: NodeWrapper): Node? {
         while (node is NodeWrapper) {
             node = (node as NodeWrapper).node
@@ -53,10 +45,6 @@ data class NodeWrapper(var node: Node) : Node {
     }
 
     override fun getValueParentCount() = parentCount
-
-    override fun deleteNaxerWrappers() {
-        node.deleteNaxerWrappers()
-    }
 
     override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
         node.normalizeNamesLambda(listName)

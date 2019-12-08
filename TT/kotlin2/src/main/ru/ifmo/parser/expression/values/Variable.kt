@@ -5,7 +5,6 @@ import ru.ifmo.parser.Node
 data class Variable(var node: String) : Node {
     var parentCount = 0
 
-
     var debug_i = lazy {
         ++Node.debug_ind
     }
@@ -26,17 +25,7 @@ data class Variable(var node: String) : Node {
         ++parentCount
     }
 
-    override fun subParentCount() {
-        --parentCount
-    }
-
-    override fun setValueParentCount(value: Int) {
-        parentCount = value
-    }
-
     override fun getValueParentCount() = parentCount
-
-    override fun deleteNaxerWrappers() {}
 
     override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
         node = listName[node] ?: node

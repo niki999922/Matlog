@@ -12,10 +12,7 @@ interface Node {
     fun createCopy() : Node
     fun getBReduction(nodeTmp: NodeWrapper): Node?
     fun addParentCount()
-    fun subParentCount()
-    fun setValueParentCount(value: Int)
     fun getValueParentCount():Int
-    fun deleteNaxerWrappers()
     fun normalizeNamesLambda(listName: MutableMap<String, String>)
     fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper)
     fun debugInd():Int

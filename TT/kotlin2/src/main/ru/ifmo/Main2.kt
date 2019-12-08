@@ -19,8 +19,6 @@ fun main() {
 //    var tree = parser.parse(input)
     val parser = ParserLambdaExpression()
 
-
-
 //    val was = "(\\a.a) d"
 //    val was = "(\\a.(\\b.b) a) (a b)"
 //    val was = "\\a.(\\b.(\\a.a)) a"
@@ -52,7 +50,6 @@ fun main() {
 
 // OMEGA
 //    val was = "(\\x.x x) (\\x.x x)"
-
 
 
 // OK
@@ -90,10 +87,8 @@ fun main() {
 //    val was = "(((\\w.(((w w) ((\\b.(((b w) w) (\\b.(\\s.(\\r.(\\x.(\\p.(\\d.(((((b o) c) (\\p.p)) (\\j.(\\y.(\\y.w)))) b))))))))) c)) w)) (\\f.(((\\c.f) (f (((f ((\\z.f) (f f))) f) f))) v))) (\\m.m))"
 
 
-
     //HERE
 //    val was = "(e (r (j (\\z.(\\h.(((\\v.((\\f.(\\v.(((\\p.(\\c.((((v z) (((p (z p)) (\\p.v)) (\\s.v))) (\\c.((c v) (\\x.(c (v s)))))) (\\l.(((((\\s.(\\q.r)) (\\y.(f f))) f) (l (\\q.((c ((\\w.((((q v) z) (((\\x.((x (\\f.(a (\\s.(\\r.(s l)))))) p)) (((\\s.(((\\k.h) (\\d.z)) c)) ((\\f.c) ((\\g.((((\\e.(\\n.(d (n (\\f.(\\f.(((\\d.((\\o.(f d)) (\\w.(\\r.(m r))))) (\\w.(((\\h.h) (f ((\\t.(\\y.t)) (\\c.(\\s.(z (\\p.(\\w.(\\w.(\\n.v)))))))))) y))) (\\f.z)))))))) v) f) (\\u.((u t) v)))) (\\y.(\\p.((((\\j.m) c) ((\\t.(v q)) (\\t.(\\p.(\\m.((\\p.(q (c p))) ((\\d.(v (\\l.(((m (\\o.(\\b.(\\e.(f (\\d.((\\k.y) t))))))) (\\l.((\\d.(\\o.(\\m.(\\j.(\\s.(\\f.(v (\\q.(s (\\l.(((\\u.((v e) l)) (k l)) l))))))))))) (q ((\\s.(p (((\\b.(\\f.(\\x.(v a)))) a) q))) n))))) ((l m) p))))) (\\b.(w p))))))))) p)))))) (\\q.(q y)))) v)) v)) h)) h)))) ((\\b.(\\h.(h (\\v.((\\e.(p (\\h.h))) (\\y.(\\p.(\\a.((\\u.(s (\\y.(\\y.d)))) (e ((\\v.((\\g.((c (\\j.(y y))) (v ((v (\\p.(\\t.(z v)))) (c ((\\c.(k (((\\x.(\\x.(((c h) p) p))) l) v))) ((e f) a))))))) l)) (\\x.(b (\\y.(y (n (\\k.(h ((\\s.f) ((\\m.(\\a.((\\o.(\\v.(o i))) u))) (\\p.(\\c.(\\s.(\\p.((\\n.(\\x.((\\y.(\\d.(\\q.(y x)))) (p (\\f.(\\m.(\\z.(\\c.((\\w.(((e i) v) p)) (\\o.(\\c.(m j)))))))))))) (\\j.((p (q c)) p))))))))))))))))))))))))))) z)))))) v) (f (((v i) ((\\n.v) v)) (\\u.o)))))) p)) h) (\\n.(\\i.(\\w.(h (\\z.(\\q.(\\d.(h ((n (z (i ((\\a.(z ((i (\\w.x)) (\\j.((\\k.((p (\\e.(\\k.(\\f.(k z))))) (\\c.(q i)))) g))))) u)))) h)))))))))))))))"
-
 
 
 //    val was = "(((m (\\h.(\\q.(\\j.(\\o.((f j) (h j))))))) (\\a.((\\i.(((a a) y) ((\\a.(\\f.(a (\\s.(a j))))) (\\n.((a (n (\\y.(\\v.(\\v.y))))) (i (\\v.(((\\u.u) (a (i (a v)))) (((w (\\v.(\\n.(\\o.(\\q.((\\q.((((\\t.h) (\\e.((\\g.((h v) (\\y.(d e)))) n))) (t o)) ((\\y.(\\x.(\\r.((d (\\o.((\\s.(\\c.a)) o))) (\\z.(\\u.(((\\l.(\\i.l)) (\\z.(q p))) q))))))) (\\g.i)))) p)))))) p) n))))))))) a))) (\\v.(\\d.((\\v.f) (\\m.m)))))"
@@ -105,7 +100,6 @@ fun main() {
 //    val was = "(\\a.((\\r.(\\t.(\\h.(\\p.(\\q.((\\q.(\\f.(i (\\x.(\\k.(q (\\c.(c (\\b.(q ((\\h.x) q))))))))))) (\\r.(\\b.(\\x.(\\v.(y (t (\\m.(r (\\n.((h (\\b.((\\f.(((\\v.((b (\\r.(q (\\j.(\\c.(\\g.(h (\\m.s)))))))) (\\a.(\\z.(v (\\l.(\\z.(\\s.(\\c.(\\k.(\\e.(s b)))))))))))) h) (m a))) x))) (\\g.(m ((\\t.(((\\d.(\\c.(\\v.(x ((((\\d.((\\f.(\\m.(\\x.((\\j.(\\k.(\\h.(\\f.(\\s.(r (\\r.(\\r.(\\v.(x (\\j.(\\d.c)))))))))))) (\\e.(\\k.e)))))) (\\b.((\\g.(((\\q.(\\z.(v (r r)))) c) t)) (\\p.(t k)))))) (\\z.(\\p.w))) c) (\\q.((\\g.(\\d.r)) d))))))) v) a)) n))))))))))))))))))) (a (\\i.(\\e.(((a (\\p.(s a))) (i (k (\\n.(a ((n i) ((\\z.(e (\\x.z))) a))))))) (a ((\\q.(\\p.(\\i.q))) (\\o.(\\i.(\\e.(\\u.(\\q.((\\i.(\\m.(\\m.u))) (((\\w.(\\o.(q o))) (\\e.((u e) i))) (i j))))))))))))))))"
 
 
-
 //    val was = "(\\x. x x x)(\\x. x x x)\n"
 //    val was = "(\\x.x x x x) ((\\x.x)(\\x.x))"
 //    val was = "(\\x.(\\u.\\v.u) x x x) ((\\z.y) a)"
@@ -113,7 +107,6 @@ fun main() {
 
 //    val was = "(\\x. x (x x) x)(\\x. x x x)\n"
 //    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))"
-
 
 
 //    val was = "(\\f.(\\x.f (x x)) (\\x.f (x x))) x"
@@ -135,12 +128,9 @@ fun main() {
     println("was     : $was")
     println("after no: ${tree.printNode()}\n")
 //    println("B redux : ${tree.getBReduction()?.printNode() ?: "can't find B redux"}")
-
-
 //    println("Redex    : ${tree.getBReduction()!!.printNode()}\n")
 
 
-    var k =1
     var reduxPar = NodeWrapper(Variable("my_tmp_Node1"))
     println("Starting do B reduction steps:")
     println("tree ${Painter.ind}  : ${tree.printNode()}")
@@ -151,23 +141,8 @@ fun main() {
         Thread.sleep(100)
         redux.bReduction(reduxPar.node)
         redux = tree.getBReduction(reduxPar)
-//        if (k == 10) {
-            println("tree ${Painter.ind}  : ${tree.printNode()}")
-            Painter.draw(tree)
-            k = 1
-//        }
-//        ++k
+        println("tree ${Painter.ind}  : ${tree.printNode()}")
+        Painter.draw(tree)
     }
     println("\ntree in end: ${tree.printNode()}")
-//    println()
-//    var tree2 = parser.parse("\\a.\\b.a b c (\\d.e \\f.g) h")
-//    println("was: \\a.\\b.a b c (\\d.e \\f.g) h")
-//    println("expected: (\\a.(\\b.((((a b) c) (\\d.(e (\\f.g)))) h)))")
-//    println("get     : ${tree2.printNode()}")
-//    println()
-//
-//    var tree3 = parser.parse("((a\\bbb.c)d)e \nf g")
-//    println("was: ((a\\bbb.c)d)e \nf g")
-//    println("expected: (((((a (\\bbb.c)) d) e) f) g)")
-//    println("get     : ${tree3.printNode()}")
 }

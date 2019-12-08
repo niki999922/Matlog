@@ -28,7 +28,6 @@ class ParserLambdaExpression : Parse {
             Lambda(Variable(lambdaTitle), lambdaBody)
         } else {
             expression()
-//            Expression(expression())
         }
     }
 
