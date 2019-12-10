@@ -1,19 +1,23 @@
 package ru.ifmo
 
+import ru.ifmo.parser.Node
 import ru.ifmo.parser.expression.ParserLambdaExpression
+import ru.ifmo.parser.expression.values.Variable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.PrintStream
+import java.util.*
 
 
 fun main() {
     val startTime = System.currentTimeMillis()
 
     Test.`test pack 1`()
-    Test.`test pack 2`()
-    Test.`test pack 3`()
-    Test.`test pack 4`()
+//    Test.`test pack 2`()
+//    Test.`test pack 3`()
+//    Test.`test pack 4`()
+//    Test.`test pack 5`()
 
     var timeSpent = System.currentTimeMillis() - startTime
     println("Duration: $timeSpent")
@@ -25,34 +29,44 @@ class Test {
 
         fun `test pack 1`() {
             val list = mutableListOf<String>()
+            list.add("x")
+            list.add("(\\x. x) (\\y. y)")
+            list.add("(\\x. x) (\\x. x)")
+            list.add("(\\x. y) (\\x. y)")
             list.add("(\\a.a) d")
-            list.add("\\a.\\b.a b")
-            list.add("\\a.(\\b.(\\a.a)) a")
-            list.add("(\\a.(\\b.\\a.a b) a) (e d)")
-            list.add("((\\a.(\\x.a) c) x)")
-            list.add("(\\a.(\\b.\\a.a b) a) e")
-            list.add("(\\x.x x) ((\\x.x) (\\x.x))")
-            list.add("(\\x.x x x x) ((\\x.x) (\\x.x))")
-            list.add("(\\f.\\x.f (f (f x))) (\\f.\\x.f (f (f x)))")
-            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x))")
-            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) x") //Y комб be careful
-            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))") //Y комб Y be careful
-            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x)) (\\x.x x)")
-            list.add("(\\a.\\b.a)(\\a.\\b.a)(\\a.\\b.b)")
-            list.add("(\\x.(\\y.(\\z.(\\a.( a b y z) a z)f y x) x ax t ax)) z y a")
-            list.add("((\\y.(\\z.(\\a. a b y z) a z)f y z) z ax t ax) y a")
-            list.add("(\\x. x x x x)((\\x.  x)(\\x.  x))")
-            list.add("((a\\bbb.c)d)e f g")
-            list.add("(\\f.f f f) (\\x.x)")
-            list.add("(\\x.(\\a. a a) x x x) ((\\a.a) b)")
-            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
-            list.add("(\\f.\\x.f) (x) a")
-            list.add("a ((\\a.a b) e)")
-            list.add("a b ((\\a.\\b.a b) e)")
+//            list.add("\\a.\\b.a b")
+//            list.add("\\a.(\\b.(\\a.a)) a")
+//            list.add("(\\a.(\\b.\\a.a b) a) (e d)")
+//            list.add("((\\a.(\\x.a) c) x)")
+//            list.add("(\\a.(\\b.\\a.a b) a) e")
+//            list.add("(\\x.x x) ((\\x.x) (\\x.x))")
+//            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) x") //Y комб be careful
+//            list.add("(\\f.(\\x.f (x x)) (\\x.f (x x))) (\\f.(\\x.f (x x)) (\\x.f (x x)))") //Y комб Y be careful
+//            list.add("(\\x.(\\y.(\\z.(\\a.( a b y z) a z)f y x) x ax t ax)) z y a")
+//            list.add("((\\y.(\\z.(\\a. a b y z) a z)f y z) z ax t ax) y a")
+//            list.add("(\\f.f f f) (\\x.x)")
             compareOther(list)
         }
 
         fun `test pack 2`() {
+            val list = mutableListOf<String>()
+//            list.add("(\\x.x x x x) ((\\x.x) (\\x.x))")
+//            list.add("(\\f.\\x.f (f (f x))) (\\f.\\x.f (f (f x)))")
+//            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x))")
+//            list.add("(\\f.\\x.f (f x)) (\\f.\\x.f (f x)) (\\x.x x)")
+//            list.add("(\\a.\\b.a)(\\a.\\b.a)(\\a.\\b.b)")
+//            list.add("(\\x. x x x x)((\\x.  x)(\\x.  x))")
+//            list.add("((a\\bbb.c)d)e f g")
+//            list.add("(\\x.(\\a. a a) x x x) ((\\a.a) b)")
+//            list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
+//            list.add("(\\f.\\x.f) (x) a")
+            list.add("a ((\\a.a b) e)")
+//            list.add("a b ((\\a.\\b.a b) e)")
+            compareOther(list)
+        }
+
+
+        fun `test pack 5`() {
             val list = mutableListOf<String>()
             list.add("(\\x.(\\y.x) x) ((\\a.a) b)")
             list.add("(\\f.\\x.f) (x) a")
@@ -100,9 +114,10 @@ class Test {
             val fileRes = File("file_res.txt")
             fileRes.delete()
             fileRes.createNewFile()
+            val listRes = mutableListOf<String>()
             list.forEach {
                 val fileTaskIn = File("file_task_in.txt")
-                fileTaskIn.writeText("$it")
+                fileTaskIn.writeText("$it ")
 //                println("$it")
                 val default_out = System.out
                 val default_in = System.`in`
@@ -110,22 +125,32 @@ class Test {
                 val fileMe = File("file_me.txt")
                 System.setOut(PrintStream(FileOutputStream(fileMe)))
                 System.setIn(FileInputStream(fileTaskIn))
+                Node.indexVariable = 1
+                Node.typeIndexVariable = 1
+                SystemTypes.systemExpressions = LinkedList()
+                SystemTypes.systemTypeMap = mutableMapOf()
+                SystemTypes.typesMap = HashMap()
+                SystemTypes.freeVariables = mutableListOf<Variable>()
+
 //                        mainq() //rename Main.main
                 System.setOut(default_out)
                 System.setIn(default_in)
 
                 val fileOther = File("file_other.txt")
 
-                ProcessBuilder("java", "-jar", "/Users/nikita/Matlog/TT/kotlin2/task3.jar").redirectOutput(fileOther).redirectInput(fileTaskIn).start().waitFor()
+                ProcessBuilder("java", "-jar", "/Users/nikita/Matlog/TT/kotlin3/task3.jar").redirectOutput(fileOther).redirectInput(fileTaskIn).start().waitFor()
 
                 val fileMeList =fileMe.readLines()
                 val fileOtherList =fileOther.readLines()
+
                 if (fileMeList.size != fileOtherList.size) {
-                    fileRes.writeText("fail size: $it;")
+//                    fileRes.writeText("fail size: $it\n")
+                    listRes.add("fail size: $it\n")
                 } else {
-                    for (i in 1..fileMeList.size) {
-                        if (fileMeList[i] != fileMeList[i]) {
-                            fileRes.writeText("fail equals line $i: $it;")
+                    for (i in 1 until fileMeList.size) {
+                        if (fileMeList[i] != fileOtherList[i]) {
+//                            fileRes.writeText("fail equals line $i: $it;")
+                            listRes.add("fail equals line $i: $it;\n")
                             break
                         }
                     }
@@ -133,6 +158,7 @@ class Test {
 //                        fileMe.delete()
 //                        fileOther.delete()
             }
+            fileRes.writeText(listRes.joinToString("\n"))
         }
     }
 }

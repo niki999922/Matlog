@@ -1,16 +1,22 @@
 package ru.ifmo.parser.expression.operations
 
+import ru.ifmo.SystemTypes
+import ru.ifmo.SystemTypes.freeVariables
 import ru.ifmo.parser.Node
+import ru.ifmo.parser.Node.Companion.generateName
+import ru.ifmo.parser.Node.Companion.generateTypeName
 import ru.ifmo.parser.expression.values.Variable
-import ru.ifmo.parser.expression.values.NodeWrapper
+import java.util.*
+import java.util.stream.Collectors
 
-class Lambda(var left: Node, var right: Node) : Node {
-    var parentCount = 0
-    var debug_i = lazy {
+data class Lambda(var left: Node, var right: Node) : Node {
+    override var type: Node? = null
+
+    private var debugI = lazy {
         ++Node.debug_ind
     }
 
-    override fun debugInd() = debug_i.value
+    override fun debugInd() = debugI.value
 
     override fun node() = "Lambda"
 
@@ -18,42 +24,53 @@ class Lambda(var left: Node, var right: Node) : Node {
 
     override fun rightChild() = right
 
-    override fun printNode(): String {
-        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            right = (right as NodeWrapper).node
-        }
+    override fun printOriginalNode(): String {
+        return "(\\${left.printOriginalNode()}.${right.printOriginalNode()})"
+    }
 
+    override fun printNode(): String {
         return "(\\${left.printNode()}.${right.printNode()})"
     }
 
-    override fun getBReduction(nodeTmp: NodeWrapper): Node? {
-        while (right is NodeWrapper && right.getValueParentCount() == parentCount) {
-            right = (right as NodeWrapper).node
+    override fun printType(): String {
+        return problemOneVariable(this)
+    }
+
+    override fun printProof(listHypothesis: MutableList<Variable>, depth: Int) {
+        for (i in 0 until depth) {
+            print("*   ")
         }
-
-        nodeTmp.node = this
-        return right.getBReduction(nodeTmp)
+        val str: String = listHypothesis.stream().map { "${it.printOriginalNode()} : ${it.printType()}" }.collect(Collectors.joining(", "))
+        if (str.length != 0) {
+            print(str + " ")
+        }
+        println("|- ${printOriginalNode()} : ${printType()} [rule #3]")
+        listHypothesis.add(left as Variable)
+        right.printProof(listHypothesis, depth + 1)
+        listHypothesis.remove(left as Variable)
     }
 
-    override fun createCopy(): Node {
-        var l = left.createCopy()
-        var r = right.createCopy()
-        return Lambda(l, r)
+    override fun initSystem() {
+        //change here for type name diff
+        left.initSystem()
+        right.initSystem()
+        freeVariables.remove(left)
+        type = Implication(left.type!!, right.type!!)
     }
 
-    override fun addParentCount() {
-        ++parentCount
+    override fun containVariable(other: Variable): Boolean {
+        return (left.containVariable(other) || right.containVariable(other))
     }
 
-    override fun getValueParentCount() = parentCount
+    override fun openTypeVariable(other: Variable, T: Node) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun normalizeNamesLambda(listName: MutableMap<String, String>) {
         val leftVariable = left as Variable
-        leftVariable.addParentCount()
         val oldVariableWrapper = listName[leftVariable.node]
 
-        val newName = "vtyh56${Node.indexVariable}"
-        ++Node.indexVariable
+        val newName = generateName()
         val oldName = leftVariable.node
 
         leftVariable.node = newName
@@ -69,7 +86,6 @@ class Lambda(var left: Node, var right: Node) : Node {
         } else {
             right.normalizeNamesLambda(listName)
         }
-        right.addParentCount()
 
         if (oldVariableWrapper != null) {
             listName[oldName] = oldVariableWrapper
@@ -77,19 +93,4 @@ class Lambda(var left: Node, var right: Node) : Node {
             listName.remove(oldName)
         }
     }
-
-    override fun setWrapperInVariable(name: String, nodeWrapper: NodeWrapper) {
-        if ((left as Variable).node == name) return
-        if (right is Variable) {
-            val rightVar = right as Variable
-            if (rightVar.node == name) {
-                right = nodeWrapper
-                right.addParentCount()
-            }
-        } else {
-            right.setWrapperInVariable(name,nodeWrapper)
-        }
-    }
-
-    override fun bReduction(parent: Node) {}
 }
